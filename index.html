@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikhil Simha — Platform &amp; Infrastructure Engineer</title>
+<meta name="description" content="Nikhil Simha — platform and infrastructure engineer in Austin, TX. Kubernetes, CI/CD, GitOps, and the tools in between.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="nav" id="nav">
+    <a href="#top" class="nav-logo">Nikhil Simha</a>
+    <nav class="nav-links">
+      <a href="#about" data-nav>about</a>
+      <a href="#projects" data-nav>projects</a>
+      <a href="#contact" data-nav>contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <p class="eyebrow">Platform / DevOps Engineer &middot; Austin, TX</p>
+      <h1 class="hero-title">I build infrastructure so <span class="gradient-text">other engineers don&rsquo;t have to think about it.</span></h1>
+      <p class="hero-sub">
+        Kubernetes, CI/CD, and the small tools in between. Currently working across Terraform,
+        GCP, and Airflow at a fintech clearing platform, with production Kubernetes and CI
+        system work at Red Hat before that.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="section-head">
+        <p class="eyebrow">$ about</p>
+        <h2>A bit about me</h2>
+      </div>
+      <div class="about-content">
+        <p>
+          I'm a platform and infrastructure engineer based in Austin, TX. Right now I'm a
+          backend engineer at a fintech clearing and investment platform, where I own
+          full-stack changes across our Assets platform &mdash; Terraform-provisioned IAM,
+          environment promotions across dev, UAT, and prod on GCP, and Airflow orchestration
+          with failure logging.
+        </p>
+        <p>
+          Before that, I spent two years at Red Hat working on OpenShift, leading automation
+          for a live production migration from SDN to OVN-Kubernetes, building EgressIP and
+          multicast automation in Go, rewriting our Jenkins end-to-end test framework, and
+          overhauling our observability stack with Prometheus and an EFK logging pipeline. I
+          hold a CKAD certification from that work. Earlier still, at Arm, I built Python
+          automation that turned raw hardware architecture data into structured specs and
+          documentation.
+        </p>
+        <p>
+          I hold a BS in Computer Engineering from the University of Illinois Urbana-Champaign.
+        </p>
+      </div>
+    </section>
+
+    <section class="projects" id="projects">
+      <div class="section-head">
+        <p class="eyebrow">$ projects</p>
+        <h2>What I'm building</h2>
+      </div>
+      <div class="grid" id="project-grid">
+        <!--
+          Project card template — duplicate this block per project once ready:
+
+          <article class="card">
+            <div class="card-media">
+              <img src="assets/PROJECT_IMAGE.png" alt="PROJECT_NAME screenshot" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>PROJECT_NAME</h3>
+              <p>Short caption explaining what it does and why it exists.</p>
+              <div class="card-tags">
+                <span>Go</span>
+                <span>Kubernetes</span>
+              </div>
+              <a href="https://github.com/USERNAME/REPO" class="card-link" target="_blank" rel="noopener">View on GitHub &rarr;</a>
+            </div>
+          </article>
+        -->
+        <article class="card card-placeholder">
+          <div class="card-body">
+            <h3>In progress</h3>
+            <p>
+              A couple of projects are still cooking &mdash; an MCP server for Agones
+              (Kubernetes-native game server orchestration), and tooling built for GameMaker.
+              Repo links, screenshots, and write-ups land here once they're ready to show.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="contact-card">
+        <p class="eyebrow">$ contact</p>
+        <h2>Let's talk</h2>
+        <p class="contact-sub">Open to opportunities, collaborations, and conversations about infrastructure.</p>
+        <a href="mailto:simha.nikhil@gmail.com" class="btn btn-primary">simha.nikhil@gmail.com</a>
+        <div class="social-links">
+          <a href="#" target="_blank" rel="noopener">GitHub</a>
+          <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Nikhil Simha. Built with vanilla HTML/CSS/JS.</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
