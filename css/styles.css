@@ -251,6 +251,13 @@ section:last-of-type { border-bottom: none; }
 
 .contact-sub { color: var(--text-dim); margin: 0 0 24px; }
 
+.contact-email {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text);
+  margin: 0;
+}
+
 .social-links {
   display: flex;
   gap: 20px;
