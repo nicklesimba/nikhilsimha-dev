@@ -215,20 +215,16 @@ section:last-of-type { border-bottom: none; }
   flex-direction: column;
   justify-content: flex-end;
   color: #0d0d0a;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  cursor: default;
 }
-
-.skill-block:hover { transform: translateY(-2px); }
 
 .skill-block-a {
   background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent) 100%);
 }
-.skill-block-a:hover { box-shadow: 0 12px 28px -12px rgba(91, 140, 255, 0.5); }
 
 .skill-block-b {
   background: linear-gradient(135deg, var(--accent-red) 0%, #ff8a6b 100%);
 }
-.skill-block-b:hover { box-shadow: 0 12px 28px -12px rgba(255, 84, 104, 0.5); }
 
 .skill-block p {
   font-family: var(--font-display);
