@@ -1,8 +1,8 @@
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Highlight the active nav link based on which section is in view.
+// Highlight the active sidebar nav link based on which section is in view.
 const sections = document.querySelectorAll('main section[id]');
-const navLinks = document.querySelectorAll('.nav-links a[data-nav]');
+const navLinks = document.querySelectorAll('.side-nav a');
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
