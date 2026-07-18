@@ -196,15 +196,12 @@ section:last-of-type { border-bottom: none; }
 
 .h-duo-sm { font-size: clamp(1.8rem, 5vw, 2.6rem); margin-bottom: 28px; }
 
-.h-solid, .h-dim { align-self: flex-start; }
-.h-solid { color: var(--text); }
-.h-dim { color: var(--text-faint); }
-
-/* Hero header gets a tri-color gradient fill instead of the solid/dim duo-tone.
+/* All duo-tone headers get the same blue/purple/red gradient fill.
    Applied per-line (not to the parent h2) so each word sweeps the full
-   blue/purple/red spectrum on its own — a single gradient across the whole
-   two-line block left red barely visible past the glyphs' line-height gap. */
-.hero .h-solid, .hero .h-dim {
+   spectrum on its own — a single gradient across a whole multi-line block
+   left the far end barely visible past the glyphs' line-height gap. */
+.h-solid, .h-dim {
+  align-self: flex-start;
   background: linear-gradient(100deg, var(--accent) 0%, var(--accent-purple) 45%, var(--accent-red) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -212,8 +209,17 @@ section:last-of-type { border-bottom: none; }
   color: transparent;
 }
 
-/* Contact header goes fully white — no duo-tone dimming here */
-.contact .h-dim { color: var(--text); }
+/* Hero header alone gets white blended into the gradient for extra pop */
+.hero .h-solid, .hero .h-dim {
+  background: linear-gradient(100deg, var(--accent) 0%, #fff 35%, var(--accent-purple) 65%, var(--accent-red) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Get In Touch reads as one line, not stacked like the other duo-tone headers */
+.contact .h-duo { flex-direction: row; gap: 0.3em; }
 
 .hero-sub {
   font-size: 1.05rem;
@@ -432,7 +438,7 @@ a.list-row:hover {
   padding: 32px 0 0;
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  color: var(--text-faint);
+  color: var(--text);
 }
 
 /* ---------- Responsive ---------- */
