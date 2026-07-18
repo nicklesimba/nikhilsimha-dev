@@ -349,13 +349,6 @@ a.list-row:hover {
 
 .list-row-placeholder .list-row-body p { max-width: 58ch; }
 
-/* Experience section runs smaller across the board, scoped so Projects is unaffected */
-#experience .h-duo-sm { font-size: clamp(1.4rem, 4vw, 2rem); }
-#experience .list-row-body h3 { font-size: 0.95rem; }
-#experience .list-row-role { font-size: 0.7rem; }
-#experience .list-row-body p { font-size: 0.85rem; }
-#experience .list-row-date { font-size: 0.7rem; }
-
 /* ---------- Marathon-inspired ambient pixel bursts ---------- */
 /* Spawned by JS only inside verified text-free zones (see js/script.js).
    Purely ambient — no mouse tracking, no click handling. */
@@ -364,7 +357,7 @@ a.list-row:hover {
   z-index: -2;
   pointer-events: none;
   opacity: 0.95;
-  filter: blur(10px);
+  filter: blur(5px);
 }
 
 .pixel-cell {
