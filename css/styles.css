@@ -38,6 +38,32 @@ body {
   position: relative;
 }
 
+/* Moving circuit-pattern background — fixed behind everything, mostly transparent.
+   The sidebar sits above this in stacking order with its own opaque fill, so it
+   never shows through. No JS, no mouse tracking — just a slow CSS background-position
+   drift, paused for users who prefer reduced motion. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -200px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='200'%20height='200'%3E%3Cg%20fill='none'%20stroke-width='1.5'%3E%3Cpath%20d='M10%2010%20L60%2010%20L60%2060%20L110%2060'%20stroke='%239b6bff'%20stroke-opacity='0.55'/%3E%3Cpath%20d='M140%2020%20L140%2080%20L190%2080'%20stroke='%235b8cff'%20stroke-opacity='0.55'/%3E%3Cpath%20d='M20%20120%20L20%20170%20L80%20170'%20stroke='%23ff5468'%20stroke-opacity='0.5'/%3E%3Cpath%20d='M100%20130%20L160%20130%20L160%20190'%20stroke='%239b6bff'%20stroke-opacity='0.5'/%3E%3Cpath%20d='M0%2060%20L-10%2060'%20stroke='%235b8cff'%20stroke-opacity='0.4'/%3E%3C/g%3E%3Cg%3E%3Ccircle%20cx='10'%20cy='10'%20r='3'%20fill='%239b6bff'%20fill-opacity='0.6'/%3E%3Ccircle%20cx='110'%20cy='60'%20r='3'%20fill='%239b6bff'%20fill-opacity='0.6'/%3E%3Ccircle%20cx='140'%20cy='20'%20r='3'%20fill='%235b8cff'%20fill-opacity='0.6'/%3E%3Ccircle%20cx='190'%20cy='80'%20r='3'%20fill='%235b8cff'%20fill-opacity='0.6'/%3E%3Ccircle%20cx='20'%20cy='120'%20r='3'%20fill='%23ff5468'%20fill-opacity='0.55'/%3E%3Ccircle%20cx='80'%20cy='170'%20r='3'%20fill='%23ff5468'%20fill-opacity='0.55'/%3E%3Ccircle%20cx='160'%20cy='130'%20r='3'%20fill='%239b6bff'%20fill-opacity='0.55'/%3E%3Ccircle%20cx='160'%20cy='190'%20r='3'%20fill='%239b6bff'%20fill-opacity='0.55'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: drift 55s linear infinite;
+}
+
+@keyframes drift {
+  from { background-position: 0 0; }
+  to { background-position: 200px 200px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+}
+
 /* Subtle static grain, purely decorative — no JS, no motion */
 body::after {
   content: "";
@@ -82,14 +108,8 @@ a { color: inherit; text-decoration: none; }
   width: 64px;
   height: 64px;
   border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.3rem;
-  color: #0d0d0a;
-  background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent) 100%);
+  object-fit: cover;
+  display: block;
   margin-bottom: 18px;
 }
 
@@ -226,6 +246,14 @@ section:last-of-type { border-bottom: none; }
   background: linear-gradient(135deg, var(--accent-red) 0%, #ff8a6b 100%);
 }
 
+.skill-block-c {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-purple) 100%);
+}
+
+.skill-block-d {
+  background: linear-gradient(135deg, var(--accent-red) 0%, var(--accent-purple) 100%);
+}
+
 .skill-block p {
   font-family: var(--font-display);
   font-weight: 700;
@@ -237,13 +265,6 @@ section:last-of-type { border-bottom: none; }
   font-family: var(--font-mono);
   font-size: 0.75rem;
   opacity: 0.75;
-}
-
-.skill-arrow {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  font-size: 1.1rem;
 }
 
 /* List rows (projects + experience) */
@@ -317,6 +338,14 @@ a.list-row:hover {
   color: var(--text-faint);
   margin: 24px 0 0;
 }
+
+/* Experience section runs smaller across the board, scoped so Projects is unaffected */
+#experience .h-duo-sm { font-size: clamp(1.4rem, 4vw, 2rem); }
+#experience .list-row-body h3 { font-size: 0.95rem; }
+#experience .list-row-role { font-size: 0.7rem; }
+#experience .list-row-body p { font-size: 0.85rem; }
+#experience .list-row-date { font-size: 0.7rem; }
+#experience .edu-note { font-size: 0.72rem; }
 
 /* Contact */
 .contact-sub { color: var(--text-dim); margin: 0 0 24px; }
