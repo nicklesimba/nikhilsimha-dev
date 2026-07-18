@@ -21,7 +21,7 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; zoom: 1.1; }
 
 body {
   margin: 0;
@@ -223,12 +223,16 @@ section:last-of-type { border-bottom: none; }
 /* Skill blocks */
 .skill-blocks {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .skill-block {
   position: relative;
+  isolation: isolate;
+  z-index: 2;
   border-radius: 8px;
   padding: 22px;
   min-height: 108px;
@@ -237,6 +241,7 @@ section:last-of-type { border-bottom: none; }
   justify-content: flex-end;
   color: #0d0d0a;
   cursor: default;
+  background-color: var(--accent-purple);
 }
 
 .skill-block-a {
@@ -347,6 +352,51 @@ a.list-row:hover {
 #experience .list-row-body p { font-size: 0.85rem; }
 #experience .list-row-date { font-size: 0.7rem; }
 #experience .edu-note { font-size: 0.72rem; }
+
+/* ---------- Marathon-inspired ambient pixel bursts ---------- */
+/* Spawned by JS only inside verified text-free zones (see js/script.js).
+   Purely ambient — no mouse tracking, no click handling. */
+.pixel-burst {
+  position: fixed;
+  z-index: 1;
+  display: grid;
+  pointer-events: none;
+}
+
+.pixel-cell {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  background-color: #3a3840;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pixel-cell.pixel-on {
+  background-color: var(--accent-purple);
+  box-shadow: 0 0 6px var(--accent-purple);
+}
+
+.pixel-cell-outer {
+  animation: pixel-pulse 650ms ease-in-out 2;
+}
+
+@keyframes pixel-pulse {
+  0%, 100% { background-color: #3a3840; box-shadow: none; }
+  50% { background-color: var(--accent-purple); box-shadow: 0 0 6px var(--accent-purple); }
+}
+
+.pixel-burst.fizzle-out {
+  animation: pixel-fizzle 1800ms ease-in forwards;
+}
+
+@keyframes pixel-fizzle {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-burst { display: none; }
+}
 
 /* Contact */
 .contact-sub { color: var(--text-dim); margin: 0 0 24px; }
