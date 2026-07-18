@@ -22,17 +22,28 @@ sections.forEach((section) => observer.observe(section));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) return;
 
-  const MAX_CONCURRENT = 2;
-  const SPAWN_CHANCE = 0.5;
-  const CHECK_INTERVAL_MS = 2500;
+  const MIN_ONSCREEN = 5; // biased floor — spawn chance jumps way up below this
+  const MAX_CONCURRENT = 12;
+  const CHECK_INTERVAL_MS = 900;
   const GRID_SIZE = 6;
   const CELL = 12;
   const CELL_GAP = 3;
   const GLOW_RANGE = 3; // cells within this Chebyshev distance of a lit cell get a soft falloff glow
   const PATTERN_SIZE = GRID_SIZE * (CELL + CELL_GAP);
+  const BREATHING_ROOM = 30; // px minimum gap enforced between any two pattern bounding boxes
   const STACK_BREAKPOINT = 880; // matches the CSS breakpoint where the sidebar stacks
 
   let active = 0;
+  let activeRects = []; // bounding boxes of currently-live patterns, for collision checks
+
+  function rectsCollide(a, b, pad) {
+    return !(
+      a.x + a.w + pad < b.x ||
+      b.x + b.w + pad < a.x ||
+      a.y + a.h + pad < b.y ||
+      b.y + b.h + pad < a.y
+    );
+  }
 
   function safeZones() {
     // Below the stack breakpoint the sidebar stacks full-width above main,
@@ -100,17 +111,19 @@ sections.forEach((section) => observer.observe(section));
     }
   }
 
-  function fizzleOut(grid) {
+  function fizzleOut(grid, rect) {
     const fadeDuration = 1800;
     grid.classList.add('fizzle-out');
     setTimeout(() => {
       grid.remove();
       active--;
+      const idx = activeRects.indexOf(rect);
+      if (idx !== -1) activeRects.splice(idx, 1);
     }, fadeDuration + 100);
   }
 
   // Behavior 1: a single lit cell chases around the outer ring.
-  function runScan(cells, grid) {
+  function runScan(cells, grid, rect) {
     const perimeter = [];
     for (let row = 0; row < GRID_SIZE; row++) {
       for (let col = 0; col < GRID_SIZE; col++) {
@@ -127,13 +140,13 @@ sections.forEach((section) => observer.observe(section));
       i++;
       if (i >= STEPS) {
         clearInterval(iv);
-        fizzleOut(grid);
+        fizzleOut(grid, rect);
       }
     }, 140);
   }
 
   // Behavior 2: real Conway's Game of Life, seeded randomly, bounded edges.
-  function runLife(cells, grid) {
+  function runLife(cells, grid, rect) {
     let state = [];
     for (let r = 0; r < GRID_SIZE; r++) {
       const row = [];
@@ -175,14 +188,14 @@ sections.forEach((section) => observer.observe(section));
       gen++;
       if (gen >= GENERATIONS) {
         clearInterval(iv);
-        fizzleOut(grid);
+        fizzleOut(grid, rect);
       }
     }, 380);
   }
 
   // Behavior 3: chaotic random spread — a few seed cells grow outward in
   // random directions, with a chance to randomly flicker off ("struggling").
-  function runStruggle(cells, grid) {
+  function runStruggle(cells, grid, rect) {
     const alive = new Set();
     const seedCount = 1 + Math.floor(Math.random() * 2);
     for (let i = 0; i < seedCount; i++) {
@@ -207,35 +220,62 @@ sections.forEach((section) => observer.observe(section));
       step++;
       if (step >= STEPS) {
         clearInterval(iv);
-        fizzleOut(grid);
+        fizzleOut(grid, rect);
       }
     }, 220);
   }
 
   const BEHAVIORS = [runScan, runLife, runStruggle];
 
+  const STEP = CELL + CELL_GAP;
+  const JITTER = 5; // px — per-cell random offset so positions never sit on a perfect lattice
+
+  // Tries every safe zone (in random order) looking for a spot that doesn't
+  // collide with any currently-live pattern, given real breathing room.
+  function findPlacement(zones) {
+    const shuffled = zones.slice().sort(() => Math.random() - 0.5);
+    for (const zone of shuffled) {
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const candidate = {
+          x: zone.x + Math.random() * Math.max(0, zone.w - PATTERN_SIZE),
+          y: zone.y + Math.random() * Math.max(0, zone.h - PATTERN_SIZE),
+          w: PATTERN_SIZE,
+          h: PATTERN_SIZE,
+        };
+        const collides = activeRects.some((r) => rectsCollide(candidate, r, BREATHING_ROOM));
+        if (!collides) return candidate;
+      }
+    }
+    return null; // no non-colliding room right now — try again next tick
+  }
+
   function spawnPattern() {
     const zones = safeZones();
     if (zones.length === 0) return;
 
-    const zone = zones[Math.floor(Math.random() * zones.length)];
-    const x = zone.x + Math.random() * Math.max(0, zone.w - PATTERN_SIZE);
-    const y = zone.y + Math.random() * Math.max(0, zone.h - PATTERN_SIZE);
+    const rect = findPlacement(zones);
+    if (!rect) return;
 
     const grid = document.createElement('div');
     grid.className = 'pixel-burst';
-    grid.style.left = `${x}px`;
-    grid.style.top = `${y}px`;
-    grid.style.gridTemplateColumns = `repeat(${GRID_SIZE}, ${CELL}px)`;
-    grid.style.gridTemplateRows = `repeat(${GRID_SIZE}, ${CELL}px)`;
-    grid.style.gap = `${CELL_GAP}px`;
+    grid.style.left = `${rect.x}px`;
+    grid.style.top = `${rect.y}px`;
+    grid.style.width = `${PATTERN_SIZE}px`;
+    grid.style.height = `${PATTERN_SIZE}px`;
 
+    // Row/col only drive the simulation's neighbor logic — each cell's
+    // rendered position gets its own fixed random jitter, so nothing lines
+    // up on a uniform raster even though the math underneath is gridded.
     const cells = [];
     for (let row = 0; row < GRID_SIZE; row++) {
       const rowCells = [];
       for (let col = 0; col < GRID_SIZE; col++) {
         const cell = document.createElement('div');
         cell.className = 'pixel-cell';
+        cell.style.width = `${CELL}px`;
+        cell.style.height = `${CELL}px`;
+        cell.style.left = `${col * STEP + (Math.random() - 0.5) * 2 * JITTER}px`;
+        cell.style.top = `${row * STEP + (Math.random() - 0.5) * 2 * JITTER}px`;
         grid.appendChild(cell);
         rowCells.push(cell);
       }
@@ -244,13 +284,18 @@ sections.forEach((section) => observer.observe(section));
 
     document.body.appendChild(grid);
     active++;
+    activeRects.push(rect);
 
     const behavior = BEHAVIORS[Math.floor(Math.random() * BEHAVIORS.length)];
-    behavior(cells, grid);
+    behavior(cells, grid, rect);
   }
 
   setInterval(() => {
-    if (active < MAX_CONCURRENT && Math.random() < SPAWN_CHANCE) {
+    if (active >= MAX_CONCURRENT) return;
+    // Strongly biased to refill up to the floor; still probabilistic above it
+    // so the count doesn't feel mechanically pinned at exactly MIN_ONSCREEN.
+    const chance = active < MIN_ONSCREEN ? 0.9 : 0.25;
+    if (Math.random() < chance) {
       spawnPattern();
     }
   }, CHECK_INTERVAL_MS);
