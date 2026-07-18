@@ -209,17 +209,50 @@ section:last-of-type { border-bottom: none; }
   color: transparent;
 }
 
-/* Hero header alone gets white blended into the gradient for extra pop */
-.hero .h-solid, .hero .h-dim {
-  background: linear-gradient(100deg, var(--accent) 0%, #fff 35%, var(--accent-purple) 65%, var(--accent-red) 100%);
+/* Hero header: gradient moves to the parent h2 (shrunk to fit its own text
+   so the color stops land on visible glyphs, not the wider container box)
+   so white can fade in at the top and blend down into color across the
+   whole two-line block, rather than resetting per word. */
+.hero .h-duo {
+  width: fit-content;
+  background:
+    linear-gradient(to bottom, #fff 0%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(100deg, var(--accent) 0%, var(--accent-purple) 50%, var(--accent-red) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
-/* Get In Touch reads as one line, not stacked like the other duo-tone headers */
-.contact .h-duo { flex-direction: row; gap: 0.3em; }
+.hero .h-solid, .hero .h-dim {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: inherit;
+  color: inherit;
+}
+
+/* Get In Touch reads as one line, not stacked like the other duo-tone
+   headers — gradient moves to the parent h2 (shrunk to fit its text) so it
+   sweeps across the whole phrase instead of resetting at the word break. */
+.contact .h-duo {
+  flex-direction: row;
+  gap: 0.3em;
+  width: fit-content;
+  background: linear-gradient(100deg, var(--accent) 0%, var(--accent-purple) 45%, var(--accent-red) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.contact .h-solid, .contact .h-dim {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: inherit;
+  color: inherit;
+}
 
 .hero-sub {
   font-size: 1.05rem;
