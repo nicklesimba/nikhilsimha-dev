@@ -292,12 +292,59 @@ sections.forEach((section) => observer.observe(section));
     }, speed);
   }
 
-  const BEHAVIORS = [runScan, runLife, runStruggle, runPulse, runSparkle];
+  // Behavior 6: a couple of satellites orbit the grid's center on a smooth
+  // circular path (trig-driven), unlike the square-perimeter chase of runScan.
+  function runOrbit(cells, grid, rect, gridSize) {
+    const glowRange = pick(GLOW_RANGE_OPTIONS);
+    const center = (gridSize - 1) / 2;
+    const radius = center * (0.6 + Math.random() * 0.35);
+    const satellites = Math.random() < 0.5 ? 1 : 2;
+    const speed = 90 + Math.floor(Math.random() * 80);
+    const orbits = 1 + Math.floor(Math.random() * 2);
+    const DEGREES_PER_STEP = 12;
+    const STEPS = Math.floor((360 * orbits) / DEGREES_PER_STEP);
+    let step = 0;
+    const iv = setInterval(() => {
+      const lit = new Set();
+      for (let s = 0; s < satellites; s++) {
+        const angle = (step * DEGREES_PER_STEP + s * (360 / satellites)) * (Math.PI / 180);
+        const r = Math.round(center + Math.sin(angle) * radius);
+        const c = Math.round(center + Math.cos(angle) * radius);
+        if (r >= 0 && r < gridSize && c >= 0 && c < gridSize) lit.add(`${r},${c}`);
+      }
+      renderGlow(cells, lit, gridSize, glowRange);
+      step++;
+      if (step >= STEPS) {
+        clearInterval(iv);
+        fizzleOut(grid, rect);
+      }
+    }, speed);
+  }
 
-  // Tries every safe zone (in random order) looking for a spot that doesn't
-  // collide with any currently-live pattern, given real breathing room.
+  const BEHAVIORS = [runScan, runLife, runStruggle, runPulse, runSparkle, runOrbit];
+
+  // Tries every safe zone looking for a spot that doesn't collide with any
+  // currently-live pattern, given real breathing room. Zone order is biased
+  // toward whichever side of the viewport currently has fewer active
+  // patterns, so left/right stays roughly balanced (small gaps are fine —
+  // this only actively rebalances once the gap grows past 1).
   function findPlacement(zones, patternSize) {
+    const mid = window.innerWidth / 2;
+    const sideOf = (z) => (z.x + z.w / 2 < mid ? 'left' : 'right');
+    const leftCount = activeRects.filter((r) => r.x + r.w / 2 < mid).length;
+    const rightCount = activeRects.length - leftCount;
+    const gap = leftCount - rightCount;
+
     const shuffled = zones.slice().sort(() => Math.random() - 0.5);
+    if (Math.abs(gap) >= 2) {
+      const preferSide = gap > 0 ? 'right' : 'left';
+      shuffled.sort((a, b) => {
+        const aMatch = sideOf(a) === preferSide ? 0 : 1;
+        const bMatch = sideOf(b) === preferSide ? 0 : 1;
+        return aMatch - bMatch;
+      });
+    }
+
     for (const zone of shuffled) {
       for (let attempt = 0; attempt < 10; attempt++) {
         const candidate = {
@@ -355,6 +402,14 @@ sections.forEach((section) => observer.observe(section));
 
     const behavior = pick(BEHAVIORS);
     behavior(cells, grid, rect, gridSize);
+  }
+
+  // Fill to capacity immediately on load rather than ramping up from zero —
+  // the page should already look alive on first paint. This naturally
+  // self-limits via findPlacement once the safe zones run out of room.
+  for (let i = 0; i < MAX_CONCURRENT; i++) {
+    if (active >= MAX_CONCURRENT) break;
+    spawnPattern();
   }
 
   setInterval(() => {
