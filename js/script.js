@@ -29,8 +29,8 @@ sections.forEach((section) => observer.observe(section));
   const CELL_GAP = 3;
   const STEP = CELL + CELL_GAP;
   const JITTER = 5; // px — per-cell random offset so positions never sit on a perfect lattice
-  const GRID_SIZE_OPTIONS = [5, 6, 7, 8];
-  const GLOW_RANGE_OPTIONS = [2, 3, 4];
+  const GRID_SIZE = 6;
+  const GLOW_RANGE = 3; // cells within this Chebyshev distance of a lit cell get a soft falloff glow
   const BREATHING_ROOM = 30; // px minimum gap enforced between any two pattern bounding boxes
   const STACK_BREAKPOINT = 880; // matches the CSS breakpoint where the sidebar stacks
 
@@ -127,10 +127,8 @@ sections.forEach((section) => observer.observe(section));
     }, fadeDuration + 100);
   }
 
-  // Behavior 1: a single lit cell chases around the outer ring. Direction,
-  // speed, and lap count are randomized per spawn.
+  // Behavior 1: a single lit cell chases around the outer ring.
   function runScan(cells, grid, rect, gridSize) {
-    const glowRange = pick(GLOW_RANGE_OPTIONS);
     const perimeter = [];
     for (let row = 0; row < gridSize; row++) {
       for (let col = 0; col < gridSize; col++) {
@@ -139,33 +137,25 @@ sections.forEach((section) => observer.observe(section));
         }
       }
     }
-    if (Math.random() < 0.5) perimeter.reverse();
-    const laps = 1 + Math.floor(Math.random() * 2);
-    const speed = 100 + Math.floor(Math.random() * 90);
     let i = 0;
-    const STEPS = perimeter.length * laps;
+    const STEPS = perimeter.length * 2;
     const iv = setInterval(() => {
       const [r, c] = perimeter[i % perimeter.length];
-      renderGlow(cells, new Set([`${r},${c}`]), gridSize, glowRange);
+      renderGlow(cells, new Set([`${r},${c}`]), gridSize, GLOW_RANGE);
       i++;
       if (i >= STEPS) {
         clearInterval(iv);
         fizzleOut(grid, rect);
       }
-    }, speed);
+    }, 140);
   }
 
-  // Behavior 2: real Conway's Game of Life. Seed density, generation count,
-  // and tick speed are all randomized per spawn.
+  // Behavior 2: real Conway's Game of Life, seeded randomly, bounded edges.
   function runLife(cells, grid, rect, gridSize) {
-    const glowRange = pick(GLOW_RANGE_OPTIONS);
-    const density = 0.25 + Math.random() * 0.2;
-    const GENERATIONS = 4 + Math.floor(Math.random() * 6);
-    const speed = 300 + Math.floor(Math.random() * 200);
     let state = [];
     for (let r = 0; r < gridSize; r++) {
       const row = [];
-      for (let c = 0; c < gridSize; c++) row.push(Math.random() < density);
+      for (let c = 0; c < gridSize; c++) row.push(Math.random() < 0.35);
       state.push(row);
     }
     function toAliveSet() {
@@ -187,7 +177,8 @@ sections.forEach((section) => observer.observe(section));
       }
       return n;
     }
-    renderGlow(cells, toAliveSet(), gridSize, glowRange);
+    renderGlow(cells, toAliveSet(), gridSize, GLOW_RANGE);
+    const GENERATIONS = 6;
     let gen = 0;
     const iv = setInterval(() => {
       const next = state.map((row) => row.slice());
@@ -198,59 +189,52 @@ sections.forEach((section) => observer.observe(section));
         }
       }
       state = next;
-      renderGlow(cells, toAliveSet(), gridSize, glowRange);
+      renderGlow(cells, toAliveSet(), gridSize, GLOW_RANGE);
       gen++;
       if (gen >= GENERATIONS) {
         clearInterval(iv);
         fizzleOut(grid, rect);
       }
-    }, speed);
+    }, 380);
   }
 
-  // Behavior 3: chaotic random spread — seed cells grow outward in random
-  // directions, with a chance to randomly flicker off ("struggling"). Seed
-  // count, spread/flicker odds, step count, and speed all randomized.
+  // Behavior 3: chaotic random spread — a few seed cells grow outward in
+  // random directions, with a chance to randomly flicker off ("struggling").
   function runStruggle(cells, grid, rect, gridSize) {
-    const glowRange = pick(GLOW_RANGE_OPTIONS);
     const alive = new Set();
-    const seedCount = 1 + Math.floor(Math.random() * 3);
+    const seedCount = 1 + Math.floor(Math.random() * 2);
     for (let i = 0; i < seedCount; i++) {
       const r = Math.floor(Math.random() * gridSize);
       const c = Math.floor(Math.random() * gridSize);
       alive.add(`${r},${c}`);
     }
-    const spreadChance = 0.4 + Math.random() * 0.35;
-    const flickerChance = 0.15 + Math.random() * 0.2;
-    const STEPS = 6 + Math.floor(Math.random() * 10);
-    const speed = 160 + Math.floor(Math.random() * 140);
-    renderGlow(cells, alive, gridSize, glowRange);
+    renderGlow(cells, alive, gridSize, GLOW_RANGE);
+    const STEPS = 10;
     let step = 0;
     const iv = setInterval(() => {
       Array.from(alive).forEach((key) => {
         const [r, c] = key.split(',').map(Number);
-        if (Math.random() < spreadChance) {
+        if (Math.random() < 0.6) {
           const rr = r + Math.floor(Math.random() * 3) - 1;
           const cc = c + Math.floor(Math.random() * 3) - 1;
           if (rr >= 0 && rr < gridSize && cc >= 0 && cc < gridSize) alive.add(`${rr},${cc}`);
         }
-        if (Math.random() < flickerChance && alive.size > 1) alive.delete(key);
+        if (Math.random() < 0.25 && alive.size > 1) alive.delete(key);
       });
-      renderGlow(cells, alive, gridSize, glowRange);
+      renderGlow(cells, alive, gridSize, GLOW_RANGE);
       step++;
       if (step >= STEPS) {
         clearInterval(iv);
         fizzleOut(grid, rect);
       }
-    }, speed);
+    }, 220);
   }
 
   // Behavior 4: a ring pulses outward from a random origin, like a radar
   // ping, until it clears the edge of the grid.
   function runPulse(cells, grid, rect, gridSize) {
-    const glowRange = pick(GLOW_RANGE_OPTIONS);
     const originR = 1 + Math.floor(Math.random() * (gridSize - 2));
     const originC = 1 + Math.floor(Math.random() * (gridSize - 2));
-    const speed = 130 + Math.floor(Math.random() * 110);
     let radius = 0;
     const iv = setInterval(() => {
       const ring = new Set();
@@ -259,47 +243,42 @@ sections.forEach((section) => observer.observe(section));
           if (Math.max(Math.abs(r - originR), Math.abs(c - originC)) === radius) ring.add(`${r},${c}`);
         }
       }
-      renderGlow(cells, ring, gridSize, glowRange);
+      renderGlow(cells, ring, gridSize, GLOW_RANGE);
       radius++;
       if (radius > gridSize) {
         clearInterval(iv);
         fizzleOut(grid, rect);
       }
-    }, speed);
+    }, 220);
   }
 
   // Behavior 5: independent cells twinkle on and off at random, unrelated
   // to one another — no spread, no adjacency, just chaotic sparkle.
   function runSparkle(cells, grid, rect, gridSize) {
-    const glowRange = pick(GLOW_RANGE_OPTIONS);
-    const density = 0.12 + Math.random() * 0.18;
-    const STEPS = 10 + Math.floor(Math.random() * 8);
-    const speed = 150 + Math.floor(Math.random() * 120);
+    const STEPS = 14;
     let step = 0;
     const iv = setInterval(() => {
       const lit = new Set();
       for (let r = 0; r < gridSize; r++) {
         for (let c = 0; c < gridSize; c++) {
-          if (Math.random() < density) lit.add(`${r},${c}`);
+          if (Math.random() < 0.18) lit.add(`${r},${c}`);
         }
       }
-      renderGlow(cells, lit, gridSize, glowRange);
+      renderGlow(cells, lit, gridSize, GLOW_RANGE);
       step++;
       if (step >= STEPS) {
         clearInterval(iv);
         fizzleOut(grid, rect);
       }
-    }, speed);
+    }, 220);
   }
 
   // Behavior 6: a couple of satellites orbit the grid's center on a smooth
   // circular path (trig-driven), unlike the square-perimeter chase of runScan.
   function runOrbit(cells, grid, rect, gridSize) {
-    const glowRange = pick(GLOW_RANGE_OPTIONS);
     const center = (gridSize - 1) / 2;
     const radius = center * (0.6 + Math.random() * 0.35);
     const satellites = Math.random() < 0.5 ? 1 : 2;
-    const speed = 90 + Math.floor(Math.random() * 80);
     const orbits = 1 + Math.floor(Math.random() * 2);
     const DEGREES_PER_STEP = 12;
     const STEPS = Math.floor((360 * orbits) / DEGREES_PER_STEP);
@@ -312,22 +291,33 @@ sections.forEach((section) => observer.observe(section));
         const c = Math.round(center + Math.cos(angle) * radius);
         if (r >= 0 && r < gridSize && c >= 0 && c < gridSize) lit.add(`${r},${c}`);
       }
-      renderGlow(cells, lit, gridSize, glowRange);
+      renderGlow(cells, lit, gridSize, GLOW_RANGE);
       step++;
       if (step >= STEPS) {
         clearInterval(iv);
         fizzleOut(grid, rect);
       }
-    }, speed);
+    }, 220);
   }
 
   const BEHAVIORS = [runScan, runLife, runStruggle, runPulse, runSparkle, runOrbit];
 
-  // Tries every safe zone looking for a spot that doesn't collide with any
-  // currently-live pattern, given real breathing room. Zone order is biased
+  function centerDistance(a, b) {
+    const acx = a.x + a.w / 2;
+    const acy = a.y + a.h / 2;
+    const bcx = b.x + b.w / 2;
+    const bcy = b.y + b.h / 2;
+    return Math.hypot(acx - bcx, acy - bcy);
+  }
+
+  // Gathers every non-colliding candidate spot across the safe zones (biased
   // toward whichever side of the viewport currently has fewer active
-  // patterns, so left/right stays roughly balanced (small gaps are fine —
-  // this only actively rebalances once the gap grows past 1).
+  // patterns, once that gap grows past 1), then picks whichever candidate is
+  // farthest from its single nearest neighbor. Plain "first open spot found"
+  // let instances land right next to each other whenever an early random
+  // attempt happened to clear the collision check, even with plenty of open
+  // space elsewhere — this makes spreading out the default instead of an
+  // accident.
   function findPlacement(zones, patternSize) {
     const mid = window.innerWidth / 2;
     const sideOf = (z) => (z.x + z.w / 2 < mid ? 'left' : 'right');
@@ -335,17 +325,15 @@ sections.forEach((section) => observer.observe(section));
     const rightCount = activeRects.length - leftCount;
     const gap = leftCount - rightCount;
 
-    const shuffled = zones.slice().sort(() => Math.random() - 0.5);
+    let candidateZones = zones;
     if (Math.abs(gap) >= 2) {
       const preferSide = gap > 0 ? 'right' : 'left';
-      shuffled.sort((a, b) => {
-        const aMatch = sideOf(a) === preferSide ? 0 : 1;
-        const bMatch = sideOf(b) === preferSide ? 0 : 1;
-        return aMatch - bMatch;
-      });
+      const sideMatch = zones.filter((z) => sideOf(z) === preferSide);
+      if (sideMatch.length) candidateZones = sideMatch;
     }
 
-    for (const zone of shuffled) {
+    const candidates = [];
+    for (const zone of candidateZones) {
       for (let attempt = 0; attempt < 10; attempt++) {
         const candidate = {
           x: zone.x + Math.random() * Math.max(0, zone.w - patternSize),
@@ -354,14 +342,27 @@ sections.forEach((section) => observer.observe(section));
           h: patternSize,
         };
         const collides = activeRects.some((r) => rectsCollide(candidate, r, BREATHING_ROOM));
-        if (!collides) return candidate;
+        if (!collides) candidates.push(candidate);
       }
     }
-    return null; // no non-colliding room right now — try again next tick
+
+    if (candidates.length === 0) return null; // no non-colliding room right now — try again next tick
+    if (activeRects.length === 0) return pick(candidates);
+
+    let best = candidates[0];
+    let bestMinDist = -Infinity;
+    for (const candidate of candidates) {
+      const minDist = Math.min(...activeRects.map((r) => centerDistance(candidate, r)));
+      if (minDist > bestMinDist) {
+        bestMinDist = minDist;
+        best = candidate;
+      }
+    }
+    return best;
   }
 
   function spawnPattern() {
-    const gridSize = pick(GRID_SIZE_OPTIONS);
+    const gridSize = GRID_SIZE;
     const patternSize = gridSize * STEP;
 
     const zones = safeZones(patternSize);

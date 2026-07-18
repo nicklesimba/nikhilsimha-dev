@@ -132,7 +132,7 @@ a { color: inherit; text-decoration: none; }
 
 .side-bio {
   font-size: 0.92rem;
-  color: var(--text-dim);
+  color: var(--text);
   margin: 0 0 24px;
 }
 
@@ -196,12 +196,28 @@ section:last-of-type { border-bottom: none; }
 
 .h-duo-sm { font-size: clamp(1.8rem, 5vw, 2.6rem); margin-bottom: 28px; }
 
+.h-solid, .h-dim { align-self: flex-start; }
 .h-solid { color: var(--text); }
 .h-dim { color: var(--text-faint); }
 
+/* Hero header gets a tri-color gradient fill instead of the solid/dim duo-tone.
+   Applied per-line (not to the parent h2) so each word sweeps the full
+   blue/purple/red spectrum on its own — a single gradient across the whole
+   two-line block left red barely visible past the glyphs' line-height gap. */
+.hero .h-solid, .hero .h-dim {
+  background: linear-gradient(100deg, var(--accent) 0%, var(--accent-purple) 45%, var(--accent-red) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Contact header goes fully white — no duo-tone dimming here */
+.contact .h-dim { color: var(--text); }
+
 .hero-sub {
   font-size: 1.05rem;
-  color: var(--text-dim);
+  color: var(--text);
   max-width: 52ch;
   margin: 0 0 36px;
 }
@@ -221,6 +237,22 @@ section:last-of-type { border-bottom: none; }
   font-weight: 800;
   font-size: 2rem;
   color: var(--text);
+}
+
+.stat-num-red {
+  background: linear-gradient(100deg, var(--accent-red) 0%, #ff8a6b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.stat-num-blue {
+  background: linear-gradient(100deg, var(--accent) 0%, var(--accent-deep) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .stat-label {
@@ -324,13 +356,13 @@ a.list-row:hover {
 
 .list-row-role {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   color: var(--accent-deep);
   margin: 0 0 8px !important;
 }
 
 .list-row-body p {
-  color: var(--text-dim);
+  color: var(--text);
   margin: 0;
   font-size: 0.94rem;
 }
@@ -386,7 +418,7 @@ a.list-row:hover {
 }
 
 /* Contact */
-.contact-sub { color: var(--text-dim); margin: 0 0 24px; }
+.contact-sub { color: var(--text); margin: 0 0 24px; }
 
 .contact-email {
   font-family: var(--font-mono);
