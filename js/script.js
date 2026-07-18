@@ -91,17 +91,21 @@ sections.forEach((section) => observer.observe(section));
   // cells are fully bright, cells within glowRange fade smoothly with
   // distance, anything further is fully invisible. This is what keeps the
   // pattern reading as an organic cluster rather than a visible square.
+  // Some grid positions have no cell at all (see buildExistenceMask) — the
+  // simulation underneath still runs on the full square lattice, they just
+  // have nothing to paint, which is what breaks up the square silhouette.
   function renderGlow(cells, aliveSet, gridSize, glowRange) {
     const aliveCoords = Array.from(aliveSet, (key) => key.split(',').map(Number));
     for (let r = 0; r < gridSize; r++) {
       for (let c = 0; c < gridSize; c++) {
+        const cell = cells[r][c];
+        if (!cell) continue;
         let dist = Infinity;
         for (let i = 0; i < aliveCoords.length; i++) {
           const [ar, ac] = aliveCoords[i];
           const d = Math.max(Math.abs(r - ar), Math.abs(c - ac));
           if (d < dist) dist = d;
         }
-        const cell = cells[r][c];
         if (dist === 0) {
           cell.classList.add('pixel-on');
           cell.style.opacity = '1';
@@ -114,6 +118,28 @@ sections.forEach((section) => observer.observe(section));
         }
       }
     }
+  }
+
+  // Carves an organic blob out of the square lattice instead of filling
+  // every cell — a randomized center/radius plus per-cell edge noise rounds
+  // off the corners (and roughs up the edges) so no two instances share the
+  // same silhouette and the pattern never reads as "a square on a grid".
+  function buildExistenceMask(gridSize) {
+    const center = (gridSize - 1) / 2;
+    const cx = center + (Math.random() - 0.5) * 1.2;
+    const cy = center + (Math.random() - 0.5) * 1.2;
+    const radius = center * (0.82 + Math.random() * 0.3);
+    const mask = [];
+    for (let r = 0; r < gridSize; r++) {
+      const row = [];
+      for (let c = 0; c < gridSize; c++) {
+        const dist = Math.hypot(r - cy, c - cx);
+        const edgeNoise = (Math.random() - 0.5) * 1.1;
+        row.push(dist + edgeNoise <= radius);
+      }
+      mask.push(row);
+    }
+    return mask;
   }
 
   function fizzleOut(grid, rect) {
@@ -300,7 +326,26 @@ sections.forEach((section) => observer.observe(section));
     }, 220);
   }
 
-  const BEHAVIORS = [runScan, runLife, runStruggle, runPulse, runSparkle, runOrbit];
+  // Weighted so Conway's Game of Life shows up more often than the other
+  // five behaviors, without ever fully excluding them.
+  const BEHAVIOR_WEIGHTS = [
+    { fn: runScan, weight: 1 },
+    { fn: runLife, weight: 3 },
+    { fn: runStruggle, weight: 1 },
+    { fn: runPulse, weight: 1 },
+    { fn: runSparkle, weight: 1 },
+    { fn: runOrbit, weight: 1 },
+  ];
+  const BEHAVIOR_WEIGHT_TOTAL = BEHAVIOR_WEIGHTS.reduce((sum, b) => sum + b.weight, 0);
+
+  function pickBehavior() {
+    let roll = Math.random() * BEHAVIOR_WEIGHT_TOTAL;
+    for (const b of BEHAVIOR_WEIGHTS) {
+      if (roll < b.weight) return b.fn;
+      roll -= b.weight;
+    }
+    return BEHAVIOR_WEIGHTS[0].fn;
+  }
 
   function centerDistance(a, b) {
     const acx = a.x + a.w / 2;
@@ -381,10 +426,17 @@ sections.forEach((section) => observer.observe(section));
     // Row/col only drive the simulation's neighbor logic — each cell's
     // rendered position gets its own fixed random jitter, so nothing lines
     // up on a uniform raster even though the math underneath is gridded.
+    // Positions outside the mask get no cell at all (left null), carving an
+    // organic silhouette instead of a filled square.
+    const mask = buildExistenceMask(gridSize);
     const cells = [];
     for (let row = 0; row < gridSize; row++) {
       const rowCells = [];
       for (let col = 0; col < gridSize; col++) {
+        if (!mask[row][col]) {
+          rowCells.push(null);
+          continue;
+        }
         const cell = document.createElement('div');
         cell.className = 'pixel-cell';
         cell.style.width = `${CELL}px`;
@@ -401,7 +453,7 @@ sections.forEach((section) => observer.observe(section));
     active++;
     activeRects.push(rect);
 
-    const behavior = pick(BEHAVIORS);
+    const behavior = pickBehavior();
     behavior(cells, grid, rect, gridSize);
   }
 
