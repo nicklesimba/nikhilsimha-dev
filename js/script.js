@@ -23,11 +23,12 @@ sections.forEach((section) => observer.observe(section));
   if (reduceMotion) return;
 
   const MAX_CONCURRENT = 2;
-  const SPAWN_CHANCE = 0.4;
-  const CHECK_INTERVAL_MS = 6000;
+  const SPAWN_CHANCE = 0.5;
+  const CHECK_INTERVAL_MS = 2500;
   const GRID_SIZE = 6;
   const CELL = 12;
   const CELL_GAP = 3;
+  const GLOW_RANGE = 3; // cells within this Chebyshev distance of a lit cell get a soft falloff glow
   const PATTERN_SIZE = GRID_SIZE * (CELL + CELL_GAP);
   const STACK_BREAKPOINT = 880; // matches the CSS breakpoint where the sidebar stacks
 
@@ -70,8 +71,33 @@ sections.forEach((section) => observer.observe(section));
     return zones.filter((z) => z.w >= PATTERN_SIZE && z.h >= PATTERN_SIZE);
   }
 
-  function setAlive(cell, alive) {
-    cell.classList.toggle('pixel-on', alive);
+  // Renders a soft distance-based glow instead of a binary on/off grid: lit
+  // cells are fully bright, cells within GLOW_RANGE fade smoothly with
+  // distance, anything further is fully invisible. This is what keeps the
+  // pattern reading as an organic cluster rather than a visible square.
+  function renderGlow(cells, aliveSet) {
+    const aliveCoords = Array.from(aliveSet, (key) => key.split(',').map(Number));
+    for (let r = 0; r < GRID_SIZE; r++) {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        let dist = Infinity;
+        for (let i = 0; i < aliveCoords.length; i++) {
+          const [ar, ac] = aliveCoords[i];
+          const d = Math.max(Math.abs(r - ar), Math.abs(c - ac));
+          if (d < dist) dist = d;
+        }
+        const cell = cells[r][c];
+        if (dist === 0) {
+          cell.classList.add('pixel-on');
+          cell.style.opacity = '1';
+        } else if (dist <= GLOW_RANGE) {
+          cell.classList.remove('pixel-on');
+          cell.style.opacity = String(((GLOW_RANGE + 1 - dist) / (GLOW_RANGE + 1)) * 0.7);
+        } else {
+          cell.classList.remove('pixel-on');
+          cell.style.opacity = '0';
+        }
+      }
+    }
   }
 
   function fizzleOut(grid) {
@@ -83,20 +109,27 @@ sections.forEach((section) => observer.observe(section));
     }, fadeDuration + 100);
   }
 
-  // Behavior 1: the original outer-ring scan/chase (pure CSS animation).
+  // Behavior 1: a single lit cell chases around the outer ring.
   function runScan(cells, grid) {
-    let order = 0;
+    const perimeter = [];
     for (let row = 0; row < GRID_SIZE; row++) {
       for (let col = 0; col < GRID_SIZE; col++) {
-        const isOuter = row === 0 || row === GRID_SIZE - 1 || col === 0 || col === GRID_SIZE - 1;
-        if (!isOuter) continue;
-        cells[row][col].classList.add('pixel-cell-outer');
-        cells[row][col].style.animationDelay = `${order * 70}ms`;
-        order++;
+        if (row === 0 || row === GRID_SIZE - 1 || col === 0 || col === GRID_SIZE - 1) {
+          perimeter.push([row, col]);
+        }
       }
     }
-    const duration = order * 70 + 650 * 2;
-    setTimeout(() => fizzleOut(grid), duration);
+    let i = 0;
+    const STEPS = perimeter.length * 2;
+    const iv = setInterval(() => {
+      const [r, c] = perimeter[i % perimeter.length];
+      renderGlow(cells, new Set([`${r},${c}`]));
+      i++;
+      if (i >= STEPS) {
+        clearInterval(iv);
+        fizzleOut(grid);
+      }
+    }, 140);
   }
 
   // Behavior 2: real Conway's Game of Life, seeded randomly, bounded edges.
@@ -104,13 +137,15 @@ sections.forEach((section) => observer.observe(section));
     let state = [];
     for (let r = 0; r < GRID_SIZE; r++) {
       const row = [];
-      for (let c = 0; c < GRID_SIZE; c++) row.push(Math.random() < 0.4);
+      for (let c = 0; c < GRID_SIZE; c++) row.push(Math.random() < 0.35);
       state.push(row);
     }
-    function render() {
+    function toAliveSet() {
+      const s = new Set();
       for (let r = 0; r < GRID_SIZE; r++) {
-        for (let c = 0; c < GRID_SIZE; c++) setAlive(cells[r][c], state[r][c]);
+        for (let c = 0; c < GRID_SIZE; c++) if (state[r][c]) s.add(`${r},${c}`);
       }
+      return s;
     }
     function countNeighbors(r, c) {
       let n = 0;
@@ -124,7 +159,7 @@ sections.forEach((section) => observer.observe(section));
       }
       return n;
     }
-    render();
+    renderGlow(cells, toAliveSet());
     const GENERATIONS = 6;
     let gen = 0;
     const iv = setInterval(() => {
@@ -136,7 +171,7 @@ sections.forEach((section) => observer.observe(section));
         }
       }
       state = next;
-      render();
+      renderGlow(cells, toAliveSet());
       gen++;
       if (gen >= GENERATIONS) {
         clearInterval(iv);
@@ -155,12 +190,7 @@ sections.forEach((section) => observer.observe(section));
       const c = Math.floor(Math.random() * GRID_SIZE);
       alive.add(`${r},${c}`);
     }
-    function render() {
-      for (let r = 0; r < GRID_SIZE; r++) {
-        for (let c = 0; c < GRID_SIZE; c++) setAlive(cells[r][c], alive.has(`${r},${c}`));
-      }
-    }
-    render();
+    renderGlow(cells, alive);
     const STEPS = 10;
     let step = 0;
     const iv = setInterval(() => {
@@ -173,7 +203,7 @@ sections.forEach((section) => observer.observe(section));
         }
         if (Math.random() < 0.25 && alive.size > 1) alive.delete(key);
       });
-      render();
+      renderGlow(cells, alive);
       step++;
       if (step >= STEPS) {
         clearInterval(iv);
