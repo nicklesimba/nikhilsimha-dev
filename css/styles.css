@@ -364,15 +364,32 @@ section:last-of-type { border-bottom: none; }
   gap: 20px;
   padding: 20px 0;
   border-bottom: 1px solid var(--surface-border);
-  transition: padding-left 0.15s ease;
 }
 
-a.list-row:hover {
-  padding-left: 8px;
+/* Hover: rounded rect painted behind the row content; the row itself never moves */
+a.list-row {
+  position: relative;
+  z-index: 0;
   color: inherit;
 }
 
+a.list-row::before {
+  content: "";
+  position: absolute;
+  inset: 8px -14px;
+  border-radius: 14px;
+  background: rgba(200, 200, 200, 0.3);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+a.list-row:hover::before { opacity: 1; }
+
 .list:first-of-type .list-row:first-child { padding-top: 0; }
+
+.list:first-of-type a.list-row:first-child::before { top: -8px; }
 
 .list-row:last-child { border-bottom: none; }
 
