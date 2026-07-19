@@ -420,6 +420,28 @@ a.list-row:hover {
 
 .list-row-placeholder .list-row-body p { max-width: 58ch; }
 
+.project-list {
+  margin: 0;
+  padding-left: 1.2em;
+  max-width: 62ch;
+  font-size: 0.94rem;
+}
+
+.project-list li { margin-bottom: 10px; }
+
+.project-list li:last-child { margin-bottom: 0; }
+
+.project-list li::marker { color: var(--accent-deep); }
+
+.project-list a {
+  color: var(--accent-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.project-list a:hover { color: var(--accent); }
+
 /* ---------- Marathon-inspired ambient pixel bursts ---------- */
 /* Spawned by JS only inside verified text-free zones (see js/script.js).
    Purely ambient — no mouse tracking, no click handling. */
