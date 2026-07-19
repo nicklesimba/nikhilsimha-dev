@@ -430,6 +430,10 @@ a.list-row:hover::before { opacity: 1; }
   white-space: nowrap;
 }
 
+/* Experience: date sits level with the org name instead of centering on the row */
+.experience .list-row { align-items: flex-start; }
+.experience .list-row-date { margin-top: 4px; }
+
 .list-row-arrow {
   font-size: 1.2rem;
   color: var(--accent-deep);
