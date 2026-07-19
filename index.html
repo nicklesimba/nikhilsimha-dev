@@ -67,42 +67,53 @@
       <section class="projects" id="projects">
         <h2 class="h-duo h-duo-sm"><span class="h-solid">Projects</span></h2>
         <div class="list">
-          <div class="list-row list-row-placeholder">
-            <div class="list-row-body">
-              <ul class="project-list">
-                <li>
-                  <a href="https://github.com/nicklesimba/gm-forge-mcp" target="_blank" rel="noopener">gm-forge-mcp</a>:
-                  MCP server for GameMaker Studio. 44 tools so an AI agent can build and edit
-                  objects, sprites, rooms, and events inside an actual project instead of just
-                  spitting out code for you to paste in.
-                </li>
-                <li>
-                  Agones MCP server: a Go server that hooks AI agents into Agones, which runs
-                  dedicated game server fleets on Kubernetes. Handy for checking on fleets and
-                  game servers without a kubectl detour. Not public yet.
-                </li>
-                <li>
-                  Cleanplate: Chrome extension that cleans up compression artifacts on YouTube
-                  in real time. The trick is the model gets trained per video, on that video's
-                  own clean and degraded frames. Also not public yet.
-                </li>
-              </ul>
+          <a href="https://github.com/nicklesimba/gm-forge-mcp" class="list-row" target="_blank" rel="noopener">
+            <div class="list-row-media list-row-media-icon">
+              <img src="assets/gm-forge-mcp-logo.svg" alt="gm-forge-mcp logo" loading="lazy">
             </div>
+            <div class="list-row-body">
+              <h3>gm-forge-mcp</h3>
+              <p>MCP server for GameMaker Studio. 44 tools so an AI agent can build and edit
+                objects, sprites, rooms, and events inside an actual project instead of just
+                spitting out code for you to paste in.</p>
+            </div>
+            <span class="list-row-arrow">&#8599;</span>
+          </a>
+          <div class="list-row">
+            <div class="list-row-media list-row-media-icon">
+              <span class="icon-placeholder" aria-hidden="true">A</span>
+            </div>
+            <div class="list-row-body">
+              <h3>Agones MCP server</h3>
+              <p>A Go server that hooks AI agents into Agones, which runs dedicated game
+                server fleets on Kubernetes. Handy for checking on fleets and game servers
+                without a kubectl detour.</p>
+            </div>
+            <span class="list-row-date">Not public yet</span>
           </div>
-          <!--
-            Once ready, replace the row above with entries like this:
-
-            <a href="https://github.com/USERNAME/REPO" class="list-row" target="_blank" rel="noopener">
-              <div class="list-row-media">
-                <img src="assets/PROJECT_IMAGE.png" alt="PROJECT_NAME screenshot" loading="lazy">
-              </div>
-              <div class="list-row-body">
-                <h3>PROJECT_NAME</h3>
-                <p>Short caption explaining what it does and why it exists.</p>
-              </div>
-              <span class="list-row-arrow">&#8599;</span>
-            </a>
-          -->
+          <div class="list-row">
+            <div class="list-row-media list-row-media-icon">
+              <span class="icon-placeholder" aria-hidden="true">C</span>
+            </div>
+            <div class="list-row-body">
+              <h3>Cleanplate</h3>
+              <p>Chrome extension that cleans up compression artifacts on YouTube in real
+                time. The trick is the model gets trained per video, on that video's own
+                clean and degraded frames.</p>
+            </div>
+            <span class="list-row-date">Not public yet</span>
+          </div>
+          <a href="https://www.youtube.com/watch?v=x40uQ9v1n20" class="list-row" target="_blank" rel="noopener">
+            <div class="list-row-media list-row-media-icon">
+              <img src="assets/mario-clone-thumb.jpg" alt="Mario clone running on hardware" loading="lazy">
+            </div>
+            <div class="list-row-body">
+              <h3>Mario clone</h3>
+              <p>A simple Mario clone written in SystemVerilog and C for ECE 385, back in
+                spring 2019. Built with Pranith Bottu.</p>
+            </div>
+            <span class="list-row-arrow">&#8599;</span>
+          </a>
         </div>
       </section>
 

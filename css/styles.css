@@ -420,27 +420,30 @@ a.list-row:hover {
 
 .list-row-placeholder .list-row-body p { max-width: 58ch; }
 
-.project-list {
-  margin: 0;
-  padding-left: 1.2em;
-  max-width: 62ch;
-  font-size: 0.94rem;
+/* Square icon/logo tiles for project rows */
+.list-row-media-icon { flex-shrink: 0; }
+
+.list-row-media-icon img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
-.project-list li { margin-bottom: 10px; }
-
-.project-list li:last-child { margin-bottom: 0; }
-
-.project-list li::marker { color: var(--accent-deep); }
-
-.project-list a {
-  color: var(--accent-deep);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.15s ease;
+.icon-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--text-faint);
 }
-
-.project-list a:hover { color: var(--accent); }
 
 /* ---------- Marathon-inspired ambient pixel bursts ---------- */
 /* Spawned by JS only inside verified text-free zones (see js/script.js).
@@ -501,4 +504,5 @@ a.list-row:hover {
   .layout { flex-direction: column; }
   .sidebar { position: static; width: 100%; }
   .list-row-media img { width: 64px; height: 44px; }
+  .list-row-media-icon img, .icon-placeholder { width: 48px; height: 48px; }
 }
