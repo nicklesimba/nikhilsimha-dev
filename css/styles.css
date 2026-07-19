@@ -426,7 +426,7 @@ a.list-row:hover::before { opacity: 1; }
 .list-row-date {
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  color: var(--text-faint);
+  color: var(--text);
   white-space: nowrap;
 }
 
