@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Load Posting Compliance Observatory — Nikhil Simha</title>
-<meta name="description" content="A camera-only screening instrument that measures whether load-posted bridges are being obeyed, and abstains out loud when it cannot tell.">
+<meta name="description" content="A camera-only screening instrument: does traffic obey this bridge's posted weight limit, and can the owner prove what was seen?">
 <meta name="theme-color" content="#121113">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23121113'/%3E%3Ctext x='32' y='43' font-family='Helvetica,Arial,sans-serif' font-size='29' font-weight='700' fill='%235b8cff' text-anchor='middle'%3ENS%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="demo.css?v=1">
+<link rel="stylesheet" href="demo.css?v=2">
 </head>
 <body>
 
@@ -21,249 +21,278 @@
   <header class="head">
     <p class="eyebrow">Case study &middot; closed source</p>
     <h1>Load Posting Compliance&nbsp;Observatory</h1>
-    <p class="lede">A camera-only screening instrument for load-posted bridges. It answers one
-      question nobody currently sells an answer to: <em>is this bridge's posted weight limit
-      being obeyed, how often is it not, and can the owner prove it?</em></p>
-    <p class="sub">Built to be wrong out loud rather than confident in private. When it cannot
-      decide, it says so, and the count of times it could not decide is published as
-      prominently as the violations.</p>
+    <p class="lede">A camera-only screening instrument: does traffic obey this bridge's posted
+      weight limit, and can the owner prove what was seen?</p>
   </header>
 
-  <section class="why">
-    <h2>Why it exists</h2>
-    <p>About 63,000 of the roughly 623,000 bridges in the United States are posted below legal
-      loads, and five out of six of those are owned by counties and towns rather than states.
-      Measuring whether anyone obeys those postings is solved only at the very top of the
-      market: a weigh-in-motion sensor array runs into millions of dollars per bridge.
-      Everywhere else the state of the art is a sign, and a hope.</p>
-    <p>The gap is not detection, which is commoditized, and it is not weight measurement, which
-      has better funded teams. The gap is that nobody joins a cheap camera to the bridge's own
-      federal record and reports compliance per structure, at inventory scale, for the long tail
-      of local bridges.</p>
-    <p class="prior"><strong>Prior art, stated plainly.</strong> Camera-triggered monitoring at a
-      weight-restricted bridge is not new. The Cawood Swing Bridge in the UK runs number-plate
-      cameras triggered by vehicle length for exactly this purpose. That is one bespoke
-      installation, plate-centric, using length as a proxy, with no inventory join and no
-      replication path. It is evidence the mechanism works and that someone paid for it once.
-      What remains unoccupied is the inventory-scale, federally-joined, privacy-minimal,
-      abstention-honest version for the US long tail.</p>
+  <section class="para">
+    <h2>What this is, in one paragraph</h2>
+    <p>This tool watches traffic crossing a load-posted bridge and asks one question per vehicle:
+      can we prove this crossing broke the posted weight limit? It flags a crossing only when the
+      documented minimum weight of that vehicle's class, the lightest that class can possibly be
+      when completely empty, already exceeds the tonnage on the sign. If that test does not settle
+      it, the answer is <em>undecided</em>, and the crossing is written to an audit ledger with the
+      reason it could not be decided. It is built for the owner of a small posted bridge, a county
+      or town engineer who has a sign and no way of knowing whether anyone obeys it.</p>
+
+    <div class="callout callout-amber">
+      <p class="callout-h">Expect this</p>
+      <p><strong>Most crossings end in "undecided", and that is the output, not a failure.</strong>
+        On the footage shipped here, effectively every crossing is undecidable, because the bridges
+        are either not load posted at all or the detector's label is too broad to pin a minimum
+        weight to. The page shows you why, crossing by crossing. A tool of this kind that reported
+        confident violations on this footage would be lying.</p>
+    </div>
+
+    <div class="callout callout-blue">
+      <p class="callout-h">About this page</p>
+      <p>These are <strong>recorded runs</strong>. Every frame, verdict and number below came out of
+        the real pipeline on a real clip, rendered ahead of time so the tool can be shown without a
+        server. The app itself runs locally on Python, PyTorch and OpenCV, which GitHub Pages cannot
+        host. Source is closed; this page is the demo.</p>
+    </div>
   </section>
 
   <!-- ============ the demo ============ -->
   <section class="demo" id="demo">
-    <div class="demo-head">
-      <h2>The tool</h2>
-      <p class="recorded-note">These are <strong>recorded runs</strong>. Every frame, verdict and
-        number below came out of the real pipeline on a real clip, rendered ahead of time so the
-        tool can be shown without a server. The app itself runs locally on Python, PyTorch and
-        OpenCV, which GitHub Pages cannot host.</p>
-    </div>
 
-    <div class="picker">
-      <label for="clip">Curated footage</label>
+    <div class="step">
+      <p class="step-n">Step 1</p>
+      <h3>Choose a bridge and clip</h3>
+      <p class="step-blurb">Curated clips only. Each is a positively identified structure paired
+        with its federal record and, where one exists, its posting manifest. There is no upload
+        box: a clip with no bridge attached has nothing honest to check against.</p>
       <div class="picker-row">
-        <select id="clip"></select>
-        <button id="run" type="button">Analyze</button>
+        <select id="clip" aria-label="Curated footage"></select>
       </div>
       <p class="picker-note" id="clip-note"></p>
     </div>
 
-    <div class="stage">
-      <div class="video-shell">
-        <video id="video" playsinline preload="metadata"></video>
-        <div class="idle-veil" id="veil">
-          <p>Select footage and press Analyze</p>
+    <div class="step">
+      <p class="step-n">Step 2</p>
+      <h3>Run it</h3>
+      <button id="run" type="button">Analyze this crossing</button>
+      <p class="step-blurb" id="run-state">Nothing running yet. Press
+        <em>Analyze this crossing</em> to start.</p>
+    </div>
+
+    <p class="disclaimer-inline">Informational screening only. NOT an engineering assessment, NOT a
+      weight measurement, and NOT a citation system. <strong>Screening, not enforcement:</strong>
+      ticketing requires certified sensors under the law, and nothing here weighs anything. A flag
+      says a vehicle class cannot weigh less than the posted limit, never what a particular vehicle
+      weighed. Consult the National Bridge Inventory, your state department of transportation, and
+      the sign actually installed at the bridge, which supersedes every record here and must be
+      obeyed.</p>
+
+    <div class="step">
+      <p class="step-n">Step 3</p>
+      <h3>The verdict tally for this run</h3>
+      <p class="step-blurb">Updates while the clip plays. Abstentions carry the same weight as flags
+        here on purpose: a compliance figure published without its undecided count would be
+        dishonest.</p>
+
+      <div class="tally">
+        <div class="t-row t-exceeds">
+          <span class="t-num mono" id="n-exceeds">0</span>
+          <span class="t-lab">Flagged<small>certificate-grade</small></span>
         </div>
-        <div class="runbar" id="runbar" hidden>
-          <span class="dot"></span>
-          <span id="runlabel">analyzing</span>
-          <span class="spacer"></span>
-          <span id="frames" class="mono">frame 0</span>
+        <div class="t-row t-abstain">
+          <span class="t-num mono" id="n-abstain">0</span>
+          <span class="t-lab">Undecided<small>abstentions</small></span>
+        </div>
+        <div class="t-row t-clear">
+          <span class="t-num mono" id="n-clear">0</span>
+          <span class="t-lab">Within limit<small>never issued, by design</small></span>
+        </div>
+        <div class="t-row t-total">
+          <span class="t-num mono" id="n-total">0</span>
+          <span class="t-lab">Crossings<small>deduplicated vehicles</small></span>
         </div>
       </div>
+      <p class="step-foot">Every crossing above, decided or not, is one row in the audit ledger.</p>
+    </div>
 
-      <aside class="live">
-        <h3>Live tally</h3>
-        <div class="tally">
-          <div class="t-row t-exceeds">
-            <span class="t-num mono" id="n-exceeds">0</span>
-            <span class="t-lab">EXCEEDS<small>certificate grade</small></span>
-          </div>
-          <div class="t-row t-abstain">
-            <span class="t-num mono" id="n-abstain">0</span>
-            <span class="t-lab">ABSTAIN<small>could not decide</small></span>
-          </div>
-          <div class="t-row t-total">
-            <span class="t-num mono" id="n-total">0</span>
-            <span class="t-lab">crossings<small>deduplicated vehicles</small></span>
+    <div class="step">
+      <p class="step-n">Step 4</p>
+      <h3>Watch the two panes</h3>
+      <div class="panes">
+        <div class="pane">
+          <p class="pane-h">Left: the source clip</p>
+          <p class="pane-sub">Exactly what the camera saw, with nothing drawn on it.</p>
+          <div class="video-shell">
+            <video id="video-src" playsinline preload="metadata" muted></video>
+            <div class="idle-veil" id="veil-src"><p>Warming up the detector.</p></div>
           </div>
         </div>
-        <p class="no-clear">There is deliberately no <em>CLEAR</em> verdict.
-          <a href="#verdicts">Why.</a></p>
-      </aside>
+        <div class="pane">
+          <p class="pane-h">Right: the same clip with the load overlay</p>
+          <p class="pane-sub">Detection, tracking and the inherited load tint. The colours are
+            illustration, not the verdict.</p>
+          <div class="video-shell">
+            <video id="video" playsinline preload="metadata" muted></video>
+            <div class="idle-veil" id="veil"><p>Warming up the detector.</p></div>
+            <div class="runbar" id="runbar" hidden>
+              <span class="dot"></span>
+              <span id="runlabel">analyzing</span>
+              <span class="spacer"></span>
+              <span id="frames" class="mono">frame 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <details class="card wide reading">
+      <summary>Reading the overlay: what each number on the picture means</summary>
+      <p class="callout-inline"><strong>Important:</strong> the colours and percentages come from an
+        illustrative model of class-typical weights. They are an illustration of load on the
+        structure and they play <strong>no part</strong> in any compliance verdict. The verdicts use
+        documented minimum weights and the posted limit, and nothing else.</p>
+      <h4>The box tint</h4>
+      <p>A label like <code>CAR #14</code> means: a car, tracked as vehicle 14. The tint shades the
+        class by how heavy that class tends to be on this structure. It carries no number, because a
+        percentage of capacity would be an assumed weight, and this version acts only on weights it
+        can defend.</p>
+      <h4>The <code>#14</code> after the class</h4>
+      <p>A tracking id, so one vehicle crossing becomes one crossing event instead of three hundred
+        boxes. It is how crossings get counted. It is not a plate: this tool does no plate
+        recognition.</p>
+    </details>
 
     <!-- report, revealed when the run finishes -->
     <div class="report" id="report" hidden>
-      <h3 class="report-title">Compliance report</h3>
-      <p class="honest" id="honest"></p>
+      <h2 class="report-title">The audit record</h2>
+      <p class="step-blurb">Every vehicle that crossed is one row, whether it could be judged or
+        not. Nothing is summarised away: each rate below is printed next to the exact number it was
+        divided by, and the count of crossings the tool declined to decide is displayed as
+        prominently as the flags, because a compliance figure without its undecided count would be
+        misleading.</p>
+
+      <div class="card wide">
+        <h4>Verdicts for this session</h4>
+        <p class="muted">The ledger module's own one-line summary of this session, quoted as it
+          generates it:</p>
+        <p class="honest" id="honest"></p>
+      </div>
 
       <div class="cards">
         <div class="card">
-          <h4>The sign</h4>
+          <h4>The posted limit, and where the number came from</h4>
+          <p class="muted small">This tonnage is the only thing a verdict is decided against, so its
+            provenance sets the ceiling on what any result here is worth. The federal inventory
+            records that a bridge is posted but never what the sign says, which is why the value has
+            to be sourced separately.</p>
           <div class="sign" id="sign"></div>
           <dl class="kv" id="posting-kv"></dl>
           <p class="caveat" id="posting-caveat"></p>
         </div>
 
         <div class="card">
-          <h4>Federal record (NBI)</h4>
+          <h4>Structure context (NBI record)</h4>
+          <p class="muted small">Background on the bridge from the federal National Bridge
+            Inventory. None of it decides a verdict: only the posted limit does.</p>
           <dl class="kv" id="bridge-kv"></dl>
+          <p class="muted small nbi-note">Condition codes run 0 to 9, where 9 is excellent, 5 is
+            fair and 4 or below is poor. The load rating is an engineer's calculated capacity, not
+            the tonnage on the sign. NBI posting code 5 means the state evaluates the bridge as
+            carrying legal loads; lower means posted below them.</p>
         </div>
       </div>
 
       <div class="card wide">
-        <h4>Why it abstained</h4>
+        <h4>Why it could not decide</h4>
         <div id="abstain-list"></div>
       </div>
 
       <div class="card wide">
-        <h4>This structure, all recorded runs</h4>
-        <p class="muted" id="structure-line"></p>
+        <h4>Crossings by vehicle class (this session)</h4>
         <div class="bylist" id="byclass"></div>
+        <p class="muted small">Class comes from the detector's most frequent label over the whole
+          track. A COCO "truck" spans a pickup through a semi, which is exactly why a class whose
+          documented minimum weight does not clear the posted limit abstains instead of guessing.
+          The "within limit" count is always zero by design: see the glossary below.</p>
       </div>
 
-      <details class="card wide disc">
-        <summary>Disclaimers carried by the tool itself</summary>
-        <ul id="disclaimers"></ul>
-      </details>
+      <div class="card wide">
+        <h4>Cumulative for this structure</h4>
+        <p class="muted small">Every session ever recorded against this bridge, not just the run
+          above. This is the number a bridge owner would quote over time.</p>
+        <p class="mono structure-line" id="structure-line"></p>
+      </div>
+
+      <div class="card wide">
+        <h4>Evidence for flagged crossings</h4>
+        <p class="muted small" id="evidence-policy"></p>
+        <p class="muted small" id="evidence-heuristic"></p>
+      </div>
     </div>
   </section>
 
-  <!-- ============ the rules ============ -->
-  <section class="rules" id="verdicts">
-    <h2>The honesty rules</h2>
-    <p class="rules-intro">These are the design, not the disclaimer. They are enforced in code and
-      in tests.</p>
+  <!-- ============ glossary ============ -->
+  <section class="glossary">
+    <h2>Glossary for the words on this page</h2>
+    <dl class="gloss">
+      <dt>Crossing</dt>
+      <dd>One tracked vehicle passing through the frame, from first sight to last. Not one box per
+        frame: three hundred boxes of one truck are one crossing.</dd>
 
-    <div class="rule">
-      <h3>Never estimate weight from pixels</h3>
-      <p>Structural facts come from federal data and from the sign. Nothing about a bridge or a
-        vehicle's mass is inferred from imagery.</p>
-    </div>
-    <div class="rule">
-      <h3>Flag only on a lower bound</h3>
-      <p>A crossing is called a violation only when the vehicle class's documented <em>minimum
-        curb weight</em>, the lightest that class can possibly be when empty, already exceeds the
-        posted limit. A transit bus exceeds a three ton posting carrying nobody. That makes every
-        violation a conservative certificate rather than an estimate. Averages are barred by an
-        automated test, because an average is not a lower bound.</p>
-    </div>
-    <div class="rule">
-      <h3>Abstain, loudly</h3>
-      <p>Where the class minimum does not settle the question, the answer is ABSTAIN, and
-        abstentions are first-class ledger rows with their reasons. A compliance rate published
-        without its abstention count would be dishonest, so the code refuses to produce one:
-        every rate is emitted next to the denominator it was computed over.</p>
-    </div>
-    <div class="rule">
-      <h3>Never claim legality</h3>
-      <p>There is no CLEAR verdict. Asserting a vehicle is within the limit would require a class
-        maximum, which is not citable: a manufacturer's gross weight rating says nothing about the
-        mass of a vehicle on the day, and an overloaded vehicle is precisely the population a
-        posting cares about. The verdict space is two-valued on purpose.</p>
-    </div>
-    <div class="rule">
-      <h3>Screening, not enforcement</h3>
-      <p>Not a citation system and not a weight measurement. Ticketing requires certified sensors
-        under the law. This produces evidence, statistics and a trend line for the bridge owner.</p>
-    </div>
-    <div class="rule">
-      <h3>Privacy is a feature</h3>
-      <p>No plate recognition. Evidence is kept only for certificate-grade exceedances, and plates
-        in saved evidence are blurred by default. The limits of that blurring are documented
-        rather than glossed.</p>
-    </div>
+      <dt>Flagged, or certificate-grade exceedance</dt>
+      <dd>A crossing where the vehicle class's documented minimum weight when completely empty
+        already exceeds the posted limit. It is a conservative certificate, not an estimate of what
+        the vehicle weighed.</dd>
+
+      <dt>Undecided, or abstention</dt>
+      <dd>A crossing the tool refused to judge, stored as a full row with the reason. It is a
+        result, not a dropped record.</dd>
+
+      <dt>Within limit</dt>
+      <dd>A verdict this tool never issues. Calling a vehicle legal would need a documented class
+        maximum, and a manufacturer's weight rating says nothing about the mass of a vehicle on the
+        day, while an overloaded vehicle is precisely the population a posting cares about. The
+        column exists because the ledger has three verdict slots; it stays at zero on purpose.</dd>
+
+      <dt>Flag rate</dt>
+      <dd>Flagged crossings divided by decided crossings. When nothing was decidable the denominator
+        is zero, and the page says so instead of printing a reassuring 0%.</dd>
+
+      <dt>Session</dt>
+      <dd>One press of Analyze on one clip.</dd>
+    </dl>
   </section>
 
-  <!-- ============ measurement ============ -->
-  <section class="measure">
-    <h2>What measurement did to the first version</h2>
-    <p>This grew out of a simpler tool, a load risk visualizer that tints each vehicle by its
-      class's typical weight. That answers a softer question and answers it well. This one exists
-      because class-typical weights, perfectly reasonable for a visualization, are not good enough
-      to accuse anyone of anything.</p>
-
-    <div class="swap">
-      <div class="swap-col">
-        <p class="swap-h">v1 assumed</p>
-        <ul>
-          <li>Typical weight per class</li>
-          <li>A number for every vehicle</li>
-          <li>Per-frame boxes</li>
-          <li>The detector's label is right</li>
-          <li>The load rating is the limit</li>
-          <li>A pretty output</li>
-        </ul>
-      </div>
-      <div class="swap-col swap-after">
-        <p class="swap-h">measurement forced</p>
-        <ul>
-          <li>Curb-weight floors, cited, averages banned by test</li>
-          <li>The freedom to abstain, no CLEAR verdict at all</li>
-          <li>Crossing events, since you cannot count violations before vehicles</li>
-          <li>A labeled test set, because it was not</li>
-          <li>The sign, since a rating never bound a driver</li>
-          <li>An auditable ledger</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="finding">
-      <p class="finding-h">The measurement that reframed the project</p>
-      <p>On 134 hand-labeled crops from our own footage, the raw detector called five objects
-        buses. None of them were buses. Two were the Golden Gate Bridge's own tower and railing.
-        Mapping raw detector labels onto weight classes would have produced a
-        <strong>35.8% false accusation rate</strong>. The refinement layer drops that to zero
-        false heavy-vehicle accusations, at the cost of abstaining on roughly half of all
-        vehicles.</p>
-    </div>
-  </section>
-
-  <!-- ============ honest state ============ -->
+  <!-- ============ disclaimers ============ -->
   <section class="state">
-    <h2>Honest current state</h2>
-    <p>The pipeline is built end to end and is honest end to end. It is <strong>not</strong> ready
-      to make a real-world claim, for one reason, and the reason is data rather than code.</p>
-    <p>The compliance model can currently decide two vehicle classes, transit bus and articulated
-      truck, because those are the two with defensible published curb-weight floors. The vision
-      layer cannot yet validly produce either one: the footage contains no buses at all, so that
-      class has zero validation samples, and no available signal separates an articulated truck
-      from a single-unit truck, so that class is never emitted. The certificate chain therefore
-      has no validated basis end to end, and the correct output today is abstention, which is what
-      you see above.</p>
-    <p>What unblocks it is footage of a heavy vehicle on a genuinely load-posted bridge, which is
-      the rural and locally owned scenario that stock footage of famous bridges structurally
-      cannot provide. That is a pilot camera, not a code change. A fine-tune plan is prepared and
-      deliberately not launched, and its binding acceptance criterion needs that same footage.</p>
+    <h2>Read this before quoting any number above</h2>
+    <ul class="disc-list" id="disclaimers-static">
+      <li>Informational screening only, NOT an engineering assessment. Consult NBI/DOT postings and
+        a licensed engineer.</li>
+      <li>Screening, not enforcement. This is not a citation system and it does not measure weight.
+        A verdict says a vehicle class cannot weigh less than the posted limit, never what this
+        vehicle weighed.</li>
+      <li>Every crossing is recorded, including abstentions. An abstention count is part of the
+        result, not a footnote: rates here are always shown with the denominator they were divided
+        by.</li>
+      <li>There is no verdict meaning "within the limit". Calling a vehicle legal would need a
+        documented class maximum, and a manufacturer's weight rating says nothing about the mass of
+        a vehicle on the day. So zero exceedances never means the traffic complied, only that
+        nothing met the bar for saying otherwise.</li>
+    </ul>
   </section>
 
   <section class="stack">
     <h2>Stack</h2>
     <p class="mono stack-line">Python &middot; Flask &middot; PyTorch &middot; YOLOv8 &middot;
       OpenCV &middot; SQLite &middot; FHWA National Bridge Inventory &middot; 237 tests</p>
-    <p class="muted">Source is closed. This page is the demo.</p>
   </section>
 
   <footer class="foot">
-    <p>Informational screening only. Not an engineering assessment, not a weight measurement, and
-      not a citation system. Consult the National Bridge Inventory, your state DOT, and the sign
+    <p>Consult the National Bridge Inventory, your state department of transportation, and the sign
       actually installed at the bridge, which supersedes every record here and must be obeyed.</p>
     <p><a href="../index.html">&#8592; back to projects</a></p>
   </footer>
 
 </div>
 
-<script src="demo.js?v=1"></script>
+<script src="demo.js?v=2"></script>
 </body>
 </html>

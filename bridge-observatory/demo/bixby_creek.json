@@ -130,13 +130,13 @@
   },
   "running": false,
   "session": {
-    "ended_at": "2026-08-20T11:18:19",
+    "ended_at": "2026-08-20T11:48:46",
     "footage_id": "bixby_creek",
     "fps": 29.97002997002997,
     "frame_count": 210,
     "notes": "",
-    "session_id": "20260820T111806-bixby_creek",
-    "started_at": "2026-08-20T11:18:06",
+    "session_id": "20260820T114833-bixby_creek",
+    "started_at": "2026-08-20T11:48:33",
     "structure_number": "44 0019"
   },
   "session_summary": {
@@ -186,7 +186,7 @@
         "total": 4
       }
     ],
-    "session_id": "20260820T111806-bixby_creek",
+    "session_id": "20260820T114833-bixby_creek",
     "sessions": 1,
     "structure_number": null,
     "timeline": [

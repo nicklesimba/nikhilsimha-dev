@@ -142,13 +142,13 @@
   },
   "running": false,
   "session": {
-    "ended_at": "2026-08-20T11:18:51",
+    "ended_at": "2026-08-20T11:49:21",
     "footage_id": "brooklyn",
     "fps": 29.97002997002997,
     "frame_count": 457,
     "notes": "",
-    "session_id": "20260820T111820-brooklyn",
-    "started_at": "2026-08-20T11:18:20",
+    "session_id": "20260820T114850-brooklyn",
+    "started_at": "2026-08-20T11:48:50",
     "structure_number": "000000002240019"
   },
   "session_summary": {
@@ -204,7 +204,7 @@
         "total": 24
       }
     ],
-    "session_id": "20260820T111820-brooklyn",
+    "session_id": "20260820T114850-brooklyn",
     "sessions": 1,
     "structure_number": null,
     "timeline": [
