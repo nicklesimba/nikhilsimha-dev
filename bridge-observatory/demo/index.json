@@ -1,0 +1,41 @@
+[
+  {
+    "footage_id": "bixby_creek",
+    "label": "Bixby Creek Bridge - Big Sur, CA (SR 1, whole 218 m span in frame)",
+    "video": "bixby_creek.mp4",
+    "report": "bixby_creek.json",
+    "frames": 210,
+    "fps": 29.97,
+    "width": 1920,
+    "height": 1080,
+    "size_mb": 2.5,
+    "credit": "Pexels (free license) - Dmitrijs Lasko",
+    "seconds": 7.0
+  },
+  {
+    "footage_id": "brooklyn",
+    "label": "Brooklyn Bridge - New York, NY (3-ton posted limit)",
+    "video": "brooklyn.mp4",
+    "report": "brooklyn.json",
+    "frames": 457,
+    "fps": 29.97,
+    "width": 1920,
+    "height": 1080,
+    "size_mb": 6.9,
+    "credit": "Pexels (free license)",
+    "seconds": 15.2
+  },
+  {
+    "footage_id": "bixby_creek_close",
+    "label": "Bixby Creek Bridge - Big Sur, CA (close orbit, dense traffic)",
+    "video": "bixby_creek_close.mp4",
+    "report": "bixby_creek_close.json",
+    "frames": 480,
+    "fps": 29.97,
+    "width": 1920,
+    "height": 1080,
+    "size_mb": 5.7,
+    "credit": "Pexels (free license) - Anastasiya Badun",
+    "seconds": 16.0
+  }
+]

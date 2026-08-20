@@ -1,0 +1,268 @@
+{
+  "abstention_breakdown": [
+    {
+      "classes": {
+        "car": 4
+      },
+      "count": 4,
+      "denominator": 4,
+      "example": "posting manifest has no gross limit and no restrictions on file, so there is nothing to test against",
+      "key": "no_limit",
+      "plain": "There is no sign tonnage recorded for this structure, so there is no number a vehicle could be over. Where the bridge is not load posted, that is the transport authority's own verdict that legal loads may cross, and this tool does not second-guess it.",
+      "share": 1.0,
+      "title": "This bridge has no posted weight limit on file",
+      "unblocks": "A load-posted bridge, or an official posting record naming the tonnage."
+    }
+  ],
+  "bridge_info": {
+    "bridge": {
+      "adt": 4300,
+      "adt_year": 2009,
+      "county_code": "053",
+      "deck_cond": 7,
+      "detour_km": 199,
+      "distance_m": 0.0,
+      "facility_carried": "STATE ROUTE 1",
+      "features_desc": "BIXBY CREEK",
+      "inventory_rating_tons": 37.6,
+      "lat": 36.370644444444444,
+      "location": "05-MON-001-59.37",
+      "lon": -121.9016,
+      "open_posted_status": "A",
+      "operating_rating_tons": 62.5,
+      "owner_code": "01",
+      "percent_truck": 0,
+      "posting_eval": "5",
+      "structural_eval": 5,
+      "structure_number": "44 0019",
+      "substructure_cond": 5,
+      "superstructure_cond": 5,
+      "year_built": 1932,
+      "year_reconstructed": 2000
+    },
+    "error": null,
+    "found": true,
+    "risk": {
+      "age_score": 0.26,
+      "capacity_score": 0.0,
+      "capacity_tons": 62.5,
+      "condition_score": 0.444,
+      "posting_score": 0.0,
+      "reasons": [
+        "Built 1932, reconstructed 2000 (26 yrs since major work)",
+        "Worst component condition 5/9 (fair)",
+        "Load capacity 62.5 t (at/above 36 t legal-max reference)",
+        "Not load-posted: DOT evaluation permits legal loads"
+      ],
+      "score": 23.0,
+      "unposted": true
+    },
+    "vehicle_risks": {
+      "bus": 0.152,
+      "car": 0.08,
+      "motorcycle": 0.08,
+      "truck": 0.317
+    }
+  },
+  "disclaimers": [
+    "Informational screening only, NOT an engineering assessment. Consult NBI/DOT postings and a licensed engineer.",
+    "Screening, not enforcement. This is not a citation system and it does not measure weight. A verdict says a vehicle class cannot weigh less than the posted limit, never what this vehicle weighed.",
+    "Every crossing is recorded, including abstentions. An abstention count is part of the result, not a footnote: rates here are always shown with the denominator they were divided by.",
+    "There is no verdict meaning 'within the limit'. Calling a vehicle legal would need a documented class maximum, and a manufacturer's weight rating says nothing about the mass of a vehicle on the day. So zero exceedances never means the traffic complied, only that nothing met the bar for saying otherwise."
+  ],
+  "evidence": [],
+  "evidence_written": 0,
+  "footage_label": "Bixby Creek Bridge - Big Sur, CA (SR 1, whole 218 m span in frame)",
+  "modules": {
+    "compliance_model": true,
+    "compliance_model_error": "",
+    "crossing_tracker": true,
+    "posting_manifest": true
+  },
+  "notes": [],
+  "posting": {
+    "available": true,
+    "caveat": "NOT LOAD POSTED, SO NOTHING IS DECIDABLE HERE. This structure has no posted weight limit on file, which means there is no tonnage for a vehicle class minimum to exceed and every crossing below is correctly recorded as an abstention. The conclusion that the bridge is unposted rests on official records, not on a surveyor walking the approaches, and the signage actually installed at the bridge supersedes every record here and must be obeyed.",
+    "corroborating_records": [
+      "NBI 2025 CA structure 44 0019: FACILITY_CARRIED_007 'STATE ROUTE 1', FEATURES_DESC_006A 'BIXBY CREEK', LOCATION_009 '05-MON-001-59.37', YEAR_BUILT_027 1932, YEAR_RECONSTRUCTED_106 2000, OWNER_022 '01' (state highway agency)",
+      "NBI 2025 CA structure 44 0019 geometry: STRUCTURE_LEN_MT_049 217.6 m, MAX_SPAN_LEN_MT_048 100.6 m, TRAFFIC_LANES_ON_028A 2, ROADWAY_WIDTH_MT_051 7.3 m \u2014 the numbers behind the claim that the whole structure and every lane are in frame",
+      "NBI 2025 CA structure 44 0019 condition: DECK_COND_058 7, SUPERSTRUCTURE_COND_059 5, SUBSTRUCTURE_COND_060 5, STRUCTURAL_EVAL_067 5, ADT_029 4300 (year 2009), PERCENT_ADT_TRUCK_109 0",
+      "NBI item code meanings: https://www.fhwa.dot.gov/bridge/mtguide.pdf and https://www.fhwa.dot.gov/bridge/nbi/posting.cfm"
+    ],
+    "is_load_posted": false,
+    "limit_short_tons": null,
+    "limit_tons": null,
+    "observed_on": "2026-08-18",
+    "official_record_quote": "OPEN_CLOSED_POSTED_041 = 'A' (open, no restriction); POSTING_EVAL_070 = '5' (equal to or above legal loads).",
+    "official_record_quote_source": "FHWA National Bridge Inventory 2025 delimited file CA25.txt, record STRUCTURE_NUMBER_008 = '44 0019', retrieved from https://www.fhwa.dot.gov/bridge/nbi/ascii.cfm and read out of the local nbi_cache/CA.csv on 2026-08-18. Item code meanings: https://www.fhwa.dot.gov/bridge/mtguide.pdf",
+    "photo": null,
+    "provenance_explain": "The tonnage comes from the owner's or the state DOT's own written posting record. Nobody has photographed the sign now standing at the bridge, and the signage actually installed supersedes any record and must be obeyed.",
+    "provenance_label": "official record, no photograph",
+    "provenance_rank": 2,
+    "raw": {
+      "photo_path": null,
+      "posted_limit_tons": null,
+      "restrictions": [],
+      "sign_text": "",
+      "source_url": "https://www.fhwa.dot.gov/bridge/nbi/ascii.cfm",
+      "structure_number": "44 0019",
+      "verification_date": "2026-08-18",
+      "verification_method": "official_record"
+    },
+    "restriction_kind": null,
+    "restrictions": [],
+    "sign_text": "",
+    "sign_text_provenance": "no_load_posting_sign_exists",
+    "source": "https://www.fhwa.dot.gov/bridge/nbi/ascii.cfm",
+    "unit": "metric tons",
+    "unverified_claims": [
+      "There is no owner-side (Caltrans) posted-bridge dataset behind the 'not posted' conclusion. New York publishes a Posted Bridges feed that names the sign tonnage; no equivalent public California feed was located, so this entry rests on NBI items 41 and 70 alone. That is a federal-record conclusion, one source deep, not two.",
+      "No surveyor has walked the approaches to confirm that no load-posting sign is present.",
+      "The ADT of 4300 is from 2009 (item 30) and is the newest figure in the 2025 file. It is not evidence about traffic in the clip and is not used as such."
+    ],
+    "verification_method": "official_record",
+    "verified": true
+  },
+  "privacy": {
+    "evidence_policy": "Clips are written only for certificate-grade exceedances, at most 20 per run. Cleared and abstained crossings are ledger rows only, with no video kept.",
+    "heuristic": "Plate regions are redacted by geometry, not by plate detection: the central lower band of the flagged vehicle's box on the evidence frame, and an over-broad corridor on clip frames. It cannot confirm a plate was covered, it covers only the flagged vehicle (other traffic in the same still keeps a readable plate), and it applies to saved files only, not to the live video feeds.",
+    "plate_blur": "on by default"
+  },
+  "running": false,
+  "session": {
+    "ended_at": "2026-08-20T11:18:19",
+    "footage_id": "bixby_creek",
+    "fps": 29.97002997002997,
+    "frame_count": 210,
+    "notes": "",
+    "session_id": "20260820T111806-bixby_creek",
+    "started_at": "2026-08-20T11:18:06",
+    "structure_number": "44 0019"
+  },
+  "session_summary": {
+    "abstention_rate": 1.0,
+    "abstention_rate_denominator": 4,
+    "abstentions": 4,
+    "by_class": {
+      "car": {
+        "ABSTAIN": 4,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 4
+      }
+    },
+    "by_hour": {
+      "11": {
+        "ABSTAIN": 4,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 4
+      }
+    },
+    "certificate_grade_exceedances": 0,
+    "compliance_rate": 0.0,
+    "compliance_rate_denominator": 0,
+    "counts": {
+      "ABSTAIN": 4,
+      "CLEAR": 0,
+      "EXCEEDS": 0
+    },
+    "decided": 0,
+    "exceedance_rate": 0.0,
+    "exceedance_rate_denominator": 0,
+    "honest_label": "0 certificate-grade exceedance(s) out of 0 decided crossing(s); 4 of 4 crossing(s) abstained because the vehicle class floor does not clear the posted limit by itself.",
+    "non_certificate_exceedances": 0,
+    "per_day": [
+      {
+        "abstain": 4,
+        "abstention_rate": 1.0,
+        "certificate_grade_exceedances": 0,
+        "clear": 0,
+        "date": "2026-08-20",
+        "decided": 0,
+        "exceedance_rate": 0.0,
+        "exceedance_rate_denominator": 0,
+        "exceeds": 0,
+        "total": 4
+      }
+    ],
+    "session_id": "20260820T111806-bixby_creek",
+    "sessions": 1,
+    "structure_number": null,
+    "timeline": [
+      {
+        "ABSTAIN": 4,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "bucket": 0,
+        "start_s": 0.0,
+        "total": 4
+      }
+    ],
+    "timeline_bucket_s": 5.0,
+    "total_crossings": 4
+  },
+  "structure_summary": {
+    "abstention_rate": 1.0,
+    "abstention_rate_denominator": 4,
+    "abstentions": 4,
+    "by_class": {
+      "car": {
+        "ABSTAIN": 4,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 4
+      }
+    },
+    "by_hour": {
+      "11": {
+        "ABSTAIN": 4,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 4
+      }
+    },
+    "certificate_grade_exceedances": 0,
+    "compliance_rate": 0.0,
+    "compliance_rate_denominator": 0,
+    "counts": {
+      "ABSTAIN": 4,
+      "CLEAR": 0,
+      "EXCEEDS": 0
+    },
+    "decided": 0,
+    "exceedance_rate": 0.0,
+    "exceedance_rate_denominator": 0,
+    "honest_label": "0 certificate-grade exceedance(s) out of 0 decided crossing(s); 4 of 4 crossing(s) abstained because the vehicle class floor does not clear the posted limit by itself.",
+    "non_certificate_exceedances": 0,
+    "per_day": [
+      {
+        "abstain": 4,
+        "abstention_rate": 1.0,
+        "certificate_grade_exceedances": 0,
+        "clear": 0,
+        "date": "2026-08-20",
+        "decided": 0,
+        "exceedance_rate": 0.0,
+        "exceedance_rate_denominator": 0,
+        "exceeds": 0,
+        "total": 4
+      }
+    ],
+    "session_id": null,
+    "sessions": 1,
+    "structure_number": "44 0019",
+    "timeline": [
+      {
+        "ABSTAIN": 4,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "bucket": 0,
+        "start_s": 0.0,
+        "total": 4
+      }
+    ],
+    "timeline_bucket_s": 5.0,
+    "total_crossings": 4
+  }
+}

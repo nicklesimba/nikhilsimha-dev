@@ -1,0 +1,324 @@
+{
+  "abstention_breakdown": [
+    {
+      "classes": {
+        "car": 22,
+        "motorcycle": 2
+      },
+      "count": 24,
+      "denominator": 24,
+      "example": "no sourced curb-weight floor for class 'car', so no lower bound on its mass exists and no exceedance can be certified",
+      "key": "no_floor",
+      "plain": "A crossing is flagged only when the class's published minimum weight when empty already exceeds the limit. Only two classes have a defensible published minimum here: transit bus and articulated truck. Every other class has no lower bound to compare against, so nothing about it can be certified either way.",
+      "share": 1.0,
+      "title": "No documented minimum empty weight exists for this vehicle class",
+      "unblocks": "A primary curb-weight document covering the lightest vehicle in the class. Averages are rejected, because an average is not a lower bound."
+    }
+  ],
+  "bridge_info": {
+    "bridge": {
+      "adt": 110939,
+      "adt_year": 2019,
+      "county_code": "061",
+      "deck_cond": 6,
+      "detour_km": 3,
+      "distance_m": 0.0,
+      "facility_carried": "BROOKLYN BRIDGE",
+      "features_desc": "I278  FDR Drive  FDR Dri",
+      "inventory_rating_tons": 2.7,
+      "lat": 40.70809722222223,
+      "location": "BROOKLYN BR OVER EAST RVR",
+      "lon": -73.99950555555556,
+      "open_posted_status": "P",
+      "operating_rating_tons": 2.7,
+      "owner_code": "04",
+      "percent_truck": 0,
+      "posting_eval": "0",
+      "structural_eval": 3,
+      "structure_number": "000000002240019",
+      "substructure_cond": 5,
+      "superstructure_cond": 4,
+      "year_built": 1883,
+      "year_reconstructed": 2016
+    },
+    "error": null,
+    "found": true,
+    "risk": {
+      "age_score": 0.1,
+      "capacity_score": 0.926,
+      "capacity_tons": 2.7,
+      "condition_score": 0.556,
+      "posting_score": 1.0,
+      "reasons": [
+        "Built 1883, reconstructed 2016 (10 yrs since major work)",
+        "Worst component condition 4/9 (POOR)",
+        "Load capacity 2.7 t (below 36 t legal-max reference)",
+        "Posted below legal loads (NBI posting code 0)"
+      ],
+      "score": 62.4,
+      "unposted": false
+    },
+    "vehicle_risks": {
+      "bus": 1.0,
+      "car": 0.814,
+      "motorcycle": 0.122,
+      "truck": 1.0
+    }
+  },
+  "disclaimers": [
+    "Informational screening only, NOT an engineering assessment. Consult NBI/DOT postings and a licensed engineer.",
+    "Screening, not enforcement. This is not a citation system and it does not measure weight. A verdict says a vehicle class cannot weigh less than the posted limit, never what this vehicle weighed.",
+    "Every crossing is recorded, including abstentions. An abstention count is part of the result, not a footnote: rates here are always shown with the denominator they were divided by.",
+    "There is no verdict meaning 'within the limit'. Calling a vehicle legal would need a documented class maximum, and a manufacturer's weight rating says nothing about the mass of a vehicle on the day. So zero exceedances never means the traffic complied, only that nothing met the bar for saying otherwise."
+  ],
+  "evidence": [],
+  "evidence_written": 0,
+  "footage_label": "Brooklyn Bridge - New York, NY (3-ton posted limit)",
+  "modules": {
+    "compliance_model": true,
+    "compliance_model_error": "",
+    "crossing_tracker": true,
+    "posting_manifest": true
+  },
+  "notes": [],
+  "posting": {
+    "available": true,
+    "caveat": "SIGN NOT PHOTOGRAPHED. The limit below comes from the state's posted-bridge record, not from a photograph of the sign now in place. The record is dated and citable, but the signage actually installed today supersedes it and must be obeyed.",
+    "corroborating_records": [
+      "NYSDOT Posted Bridges feed, layer 3 'Posted Load Bridges', BIN 2240019 'Brooklyn Bridge', CROSSED_1 'EAST RIVER', POSTED_LOAD_TONS = 3, POSTED_LEGEND = 'P', POSTING_CODE = 3.0, LATITUDE 40.70809798, LONGITUDE -73.99950801, Date_FC_Updated 2026-08-17T09:05:17Z, retrieved 2026-08-17 from https://gis.dot.ny.gov/hostingny/rest/services/Geocortex/PostedBridges/MapServer/3/query?where=BIN+LIKE+%272240%25%27&outFields=*&f=json",
+      "NYSDOT 'Posted Bridges' report (2006-11-07), BIN 2240019 BROOKLYN BRIDGE, 'BROOKLYN BR OVER EAST R', Posted Load 3.00 TONS: https://www.dot.ny.gov/nypermits/repository/posted.pdf",
+      "NBI 2025 NY item 41 OPEN_CLOSED_POSTED_041 = 'P' (posted for load) and item 70 POSTING_EVAL_070 = '0' (more than 39.9% below legal loads) for structure 000000002240019",
+      "NBI 2025 NY operating rating (item 64) = 2.7 METRIC tons for structure 000000002240019, which is 2.98 short tons and so agrees with the 3 short ton posting to within 0.8% \u2014 the posting and the rating are the same physical limit in different units, not two different limits",
+      "NBI item code meanings: https://www.fhwa.dot.gov/bridge/mtguide.pdf and https://www.fhwa.dot.gov/bridge/nbi/posting.cfm"
+    ],
+    "is_load_posted": true,
+    "limit_short_tons": 3.0,
+    "limit_tons": 2.72155422,
+    "observed_on": "2026-08-17",
+    "official_record_quote": "Posted-Load Bridge: A bridge or elevated structure which has a specific weight limit in tons posted on a sign. All vehicles exceeding the specified weights are prohibited, including those with overweight permits.",
+    "official_record_quote_source": "NYSDOT, 'Posted Bridges' definitions, https://www.dot.ny.gov/nypermits/repository/posted.pdf",
+    "photo": null,
+    "provenance_explain": "The tonnage comes from the owner's or the state DOT's own written posting record. Nobody has photographed the sign now standing at the bridge, and the signage actually installed supersedes any record and must be obeyed.",
+    "provenance_label": "official record, no photograph",
+    "provenance_rank": 2,
+    "raw": {
+      "photo_path": null,
+      "posted_limit_tons": 2.72155422,
+      "restrictions": [
+        {
+          "kind": "gross",
+          "tons": 2.72155422
+        }
+      ],
+      "sign_text": "WEIGHT LIMIT 3 TONS",
+      "source_url": "https://www.dot.ny.gov/gisapps/posted-bridges",
+      "structure_number": "000000002240019",
+      "verification_date": "2026-08-17",
+      "verification_method": "official_record"
+    },
+    "restriction_kind": "gross",
+    "restrictions": [
+      {
+        "kind": "gross",
+        "tons": 2.72155422
+      }
+    ],
+    "sign_text": "WEIGHT LIMIT 3 TONS",
+    "sign_text_provenance": "official_record_derived",
+    "source": "https://www.dot.ny.gov/gisapps/posted-bridges",
+    "unit": "metric tons",
+    "unverified_claims": [
+      "The literal legend on the physical sign. 'WEIGHT LIMIT 3 TONS' is the MUTCD R12-1 standard form applied to the official record value of 3; it has NOT been transcribed from a photograph of this sign. Secondary coverage variously renders it 'MAXIMUM WEIGHT 3 TONS' and pairs it with 'NO TRUCKS' plates, and secondary coverage is hearsay for this purpose.",
+      "Whether the posting is signed as a gross-weight limit alone or is accompanied by axle/combination plates (MUTCD R12-2 / R12-5). We record kind='gross' because that is the only kind the official record supports.",
+      "The date the current sign was installed, and whether the signs actually in place today still read 3 tons. NYSDOT's own disclaimer is explicit: 'Current posted signage supersedes this report and must be obeyed.'"
+    ],
+    "verification_method": "official_record",
+    "verified": true
+  },
+  "privacy": {
+    "evidence_policy": "Clips are written only for certificate-grade exceedances, at most 20 per run. Cleared and abstained crossings are ledger rows only, with no video kept.",
+    "heuristic": "Plate regions are redacted by geometry, not by plate detection: the central lower band of the flagged vehicle's box on the evidence frame, and an over-broad corridor on clip frames. It cannot confirm a plate was covered, it covers only the flagged vehicle (other traffic in the same still keeps a readable plate), and it applies to saved files only, not to the live video feeds.",
+    "plate_blur": "on by default"
+  },
+  "running": false,
+  "session": {
+    "ended_at": "2026-08-20T11:18:51",
+    "footage_id": "brooklyn",
+    "fps": 29.97002997002997,
+    "frame_count": 457,
+    "notes": "",
+    "session_id": "20260820T111820-brooklyn",
+    "started_at": "2026-08-20T11:18:20",
+    "structure_number": "000000002240019"
+  },
+  "session_summary": {
+    "abstention_rate": 1.0,
+    "abstention_rate_denominator": 24,
+    "abstentions": 24,
+    "by_class": {
+      "car": {
+        "ABSTAIN": 22,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 22
+      },
+      "motorcycle": {
+        "ABSTAIN": 2,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 2
+      }
+    },
+    "by_hour": {
+      "11": {
+        "ABSTAIN": 24,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 24
+      }
+    },
+    "certificate_grade_exceedances": 0,
+    "compliance_rate": 0.0,
+    "compliance_rate_denominator": 0,
+    "counts": {
+      "ABSTAIN": 24,
+      "CLEAR": 0,
+      "EXCEEDS": 0
+    },
+    "decided": 0,
+    "exceedance_rate": 0.0,
+    "exceedance_rate_denominator": 0,
+    "honest_label": "0 certificate-grade exceedance(s) out of 0 decided crossing(s); 24 of 24 crossing(s) abstained because the vehicle class floor does not clear the posted limit by itself.",
+    "non_certificate_exceedances": 0,
+    "per_day": [
+      {
+        "abstain": 24,
+        "abstention_rate": 1.0,
+        "certificate_grade_exceedances": 0,
+        "clear": 0,
+        "date": "2026-08-20",
+        "decided": 0,
+        "exceedance_rate": 0.0,
+        "exceedance_rate_denominator": 0,
+        "exceeds": 0,
+        "total": 24
+      }
+    ],
+    "session_id": "20260820T111820-brooklyn",
+    "sessions": 1,
+    "structure_number": null,
+    "timeline": [
+      {
+        "ABSTAIN": 10,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "bucket": 0,
+        "start_s": 0.0,
+        "total": 10
+      },
+      {
+        "ABSTAIN": 7,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "bucket": 1,
+        "start_s": 5.0,
+        "total": 7
+      },
+      {
+        "ABSTAIN": 7,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "bucket": 2,
+        "start_s": 10.0,
+        "total": 7
+      }
+    ],
+    "timeline_bucket_s": 5.0,
+    "total_crossings": 24
+  },
+  "structure_summary": {
+    "abstention_rate": 1.0,
+    "abstention_rate_denominator": 24,
+    "abstentions": 24,
+    "by_class": {
+      "car": {
+        "ABSTAIN": 22,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 22
+      },
+      "motorcycle": {
+        "ABSTAIN": 2,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 2
+      }
+    },
+    "by_hour": {
+      "11": {
+        "ABSTAIN": 24,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "total": 24
+      }
+    },
+    "certificate_grade_exceedances": 0,
+    "compliance_rate": 0.0,
+    "compliance_rate_denominator": 0,
+    "counts": {
+      "ABSTAIN": 24,
+      "CLEAR": 0,
+      "EXCEEDS": 0
+    },
+    "decided": 0,
+    "exceedance_rate": 0.0,
+    "exceedance_rate_denominator": 0,
+    "honest_label": "0 certificate-grade exceedance(s) out of 0 decided crossing(s); 24 of 24 crossing(s) abstained because the vehicle class floor does not clear the posted limit by itself.",
+    "non_certificate_exceedances": 0,
+    "per_day": [
+      {
+        "abstain": 24,
+        "abstention_rate": 1.0,
+        "certificate_grade_exceedances": 0,
+        "clear": 0,
+        "date": "2026-08-20",
+        "decided": 0,
+        "exceedance_rate": 0.0,
+        "exceedance_rate_denominator": 0,
+        "exceeds": 0,
+        "total": 24
+      }
+    ],
+    "session_id": null,
+    "sessions": 1,
+    "structure_number": "000000002240019",
+    "timeline": [
+      {
+        "ABSTAIN": 10,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "bucket": 0,
+        "start_s": 0.0,
+        "total": 10
+      },
+      {
+        "ABSTAIN": 7,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "bucket": 1,
+        "start_s": 5.0,
+        "total": 7
+      },
+      {
+        "ABSTAIN": 7,
+        "CLEAR": 0,
+        "EXCEEDS": 0,
+        "bucket": 2,
+        "start_s": 10.0,
+        "total": 7
+      }
+    ],
+    "timeline_bucket_s": 5.0,
+    "total_crossings": 24
+  }
+}

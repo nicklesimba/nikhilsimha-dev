@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Load Posting Compliance Observatory">
+  <clipPath id="obsFrame"><rect x="2" y="2" width="124" height="124" rx="26"/></clipPath>
+
+  <rect x="2" y="2" width="124" height="124" rx="26" fill="#FFFFFF"/>
+
+  <g clip-path="url(#obsFrame)">
+    <!-- deck line -->
+    <rect x="2" y="74" width="124" height="5" fill="#121113"/>
+
+    <!-- suspension: two towers and a slung main cable, the bridge being watched -->
+    <g fill="none" stroke="#2d70de" stroke-width="4.5" stroke-linecap="round">
+      <path d="M8 74 C 26 40, 42 40, 46 74"/>
+      <path d="M46 74 C 50 40, 66 40, 70 74"/>
+      <path d="M70 74 C 74 44, 92 44, 104 62"/>
+    </g>
+    <g fill="#121113">
+      <rect x="43" y="30" width="6" height="44" rx="2"/>
+      <rect x="67" y="30" width="6" height="44" rx="2"/>
+    </g>
+
+    <!-- hangers -->
+    <g stroke="#2d70de" stroke-opacity="0.35" stroke-width="2">
+      <path d="M22 58 V74"/><path d="M32 51 V74"/>
+      <path d="M56 47 V74"/><path d="M62 50 V74"/>
+      <path d="M82 50 V74"/><path d="M92 53 V74"/>
+    </g>
+
+    <!-- the sign: a posted limit, which is the only number that legally binds -->
+    <g transform="translate(78 76)">
+      <rect x="0" y="0" width="40" height="40" rx="5" fill="#FFFFFF" stroke="#121113" stroke-width="4.5"/>
+      <text x="20" y="16" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+            font-size="9.5" font-weight="700" fill="#121113">WT</text>
+      <text x="20" y="31" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+            font-size="14" font-weight="800" fill="#d33045">3T</text>
+    </g>
+
+    <!-- vehicle under watch, tinted the way the overlay tints a heavy class -->
+    <g transform="translate(14 60)">
+      <rect x="0" y="0" width="26" height="13" rx="2.5" fill="#d33045" fill-opacity="0.85"/>
+      <circle cx="6.5" cy="14" r="3.2" fill="#121113"/>
+      <circle cx="19.5" cy="14" r="3.2" fill="#121113"/>
+    </g>
+
+    <!-- detection box around it: the camera's judgement, drawn as the tool draws it -->
+    <g fill="none" stroke="#d33045" stroke-width="2.5" stroke-dasharray="5 4">
+      <rect x="10" y="56" width="35" height="22" rx="2"/>
+    </g>
+  </g>
+</svg>
