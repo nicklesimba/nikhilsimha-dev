@@ -40,10 +40,37 @@
     bridgeKv: document.getElementById('bridge-kv'),
     abstainList: document.getElementById('abstain-list'),
     structureLine: document.getElementById('structure-line'),
+    runKv: document.getElementById('run-kv'),
+    cumulativeKv: document.getElementById('cumulative-kv'),
+    byday: document.getElementById('byday'),
     byclass: document.getElementById('byclass'),
+    timeline: document.getElementById('timeline'),
+    bucketNote: document.getElementById('bucket-note'),
+    tEnd: document.getElementById('t-end'),
     evidencePolicy: document.getElementById('evidence-policy'),
     evidenceHeuristic: document.getElementById('evidence-heuristic')
   };
+
+  function table(el, headers, rows) {
+    var html = '<tr>' + headers.map(function (h) {
+      return '<th>' + h + '</th>';
+    }).join('') + '</tr>';
+    rows.forEach(function (r) {
+      html += '<tr>' + r.map(function (c) {
+        var cls = c && c.cls ? ' class="' + c.cls + '"' : '';
+        var v = c && typeof c === 'object' ? c.v : c;
+        return '<td' + cls + '>' + (v == null ? '' : v) + '</td>';
+      }).join('') + '</tr>';
+    });
+    el.innerHTML = html;
+  }
+
+  // "0 of 0" rather than a reassuring 0%: the tool refuses to print a rate
+  // whose denominator is zero, and so does this page.
+  function rate(n, d) {
+    if (!d) return 'no decided crossings';
+    return Math.round((n / d) * 100) + '%  (' + n + ' of ' + d + ')';
+  }
 
   var manifest = [];
   var current = null;
@@ -135,19 +162,57 @@
     ]);
     text(els.postingCaveat, p.caveat || '');
 
+    var risk = (report.bridge_info && report.bridge_info.risk) || {};
     kv(els.bridgeKv, [
-      ['structure number', b.structure_number],
-      ['carries', b.facility_carried],
-      ['built / reconstructed',
+      ['Bridge', b.location || b.facility_carried],
+      ['Structure number', b.structure_number],
+      ['Risk score', risk.score != null ? risk.score + ' / 100' : null],
+      ['Built / reconstructed',
         [b.year_built, b.year_reconstructed].filter(Boolean).join(' / ')],
-      ['NBI posting status', b.open_posted_status],
-      ['NBI posting code (item 70)', b.posting_eval],
-      ['load rating (operating)',
-        b.operating_rating_tons != null ? b.operating_rating_tons + ' metric t' : null],
-      ['condition: deck / super / sub',
+      ['Condition: deck / super / sub',
         [b.deck_cond, b.superstructure_cond, b.substructure_cond].join(' / ')],
+      ['Load rating (operating)',
+        b.operating_rating_tons != null ? b.operating_rating_tons + ' metric t' : null],
+      ['NBI posting code (item 70)', b.posting_eval],
       ['ADT', b.adt != null ? num(b.adt) + (b.adt_year ? ' (' + b.adt_year + ')' : '') : null]
     ]);
+
+    // --- this run -------------------------------------------------------
+    var sess = report.session || {};
+    kv(els.runKv, [
+      ['Footage', report.footage_label || sess.footage_id],
+      ['Structure number', sess.structure_number],
+      ['Session', sess.session_id],
+      ['Started / ended',
+        [sess.started_at, sess.ended_at].filter(Boolean).join('  ->  ')],
+      ['Frames read', num(sess.frame_count)],
+      ['Posting used', p.sign_text || 'none on record'],
+      ['Run notes', sess.notes || 'none']
+    ]);
+
+    // --- cumulative for this structure ----------------------------------
+    var ss = report.structure_summary || {};
+    kv(els.cumulativeKv, [
+      ['Sessions', num(ss.sessions)],
+      ['Crossings', num(ss.total_crossings)],
+      ['Decided', num(ss.decided)],
+      ['Flagged', num(ss.certificate_grade_exceedances)],
+      ['Undecided', num(ss.abstentions)],
+      ['Flag rate', rate(ss.certificate_grade_exceedances || 0,
+                         ss.exceedance_rate_denominator || 0)]
+    ]);
+    text(els.structureLine, ss.honest_label || '');
+
+    // --- by day ---------------------------------------------------------
+    table(els.byday,
+      ['Date', 'Crossings', 'Decided', 'Flagged', 'Undecided', 'Flag rate'],
+      (ss.per_day || []).map(function (d) {
+        return [d.date, num(d.total), num(d.decided),
+                { v: num(d.exceeds), cls: d.exceeds ? 'flagged' : 'dim' },
+                { v: num(d.abstain), cls: d.abstain ? 'undecided' : 'dim' },
+                { v: rate(d.exceeds || 0, d.exceedance_rate_denominator || 0),
+                  cls: 'dim' }];
+      }));
 
     els.abstainList.innerHTML = '';
     (report.abstention_breakdown || []).forEach(function (a) {
@@ -181,24 +246,41 @@
       els.abstainList.appendChild(wrap);
     });
 
-    var ss = report.structure_summary || {};
-    text(els.structureLine,
-      num(ss.total_crossings || 0) + ' crossings across ' + num(ss.sessions || 0) +
-      ' session(s). ' + (ss.honest_label || ''));
-
-    els.byclass.innerHTML = '';
+    // --- crossings by vehicle class -------------------------------------
     var byClass = s.by_class || {};
-    Object.keys(byClass).sort(function (x, y) {
-      return (byClass[y].total || 0) - (byClass[x].total || 0);
-    }).forEach(function (cls) {
-      var row = byClass[cls];
-      var chip = document.createElement('span');
-      chip.className = 'chip';
-      chip.innerHTML = '<b>' + cls + '</b> ' + num(row.total || 0) +
-        ' &middot; flagged ' + (row.EXCEEDS || 0) +
-        ' &middot; undecided ' + (row.ABSTAIN || 0);
-      els.byclass.appendChild(chip);
-    });
+    table(els.byclass,
+      ['Class', 'Crossings', 'Flagged', 'Within limit', 'Undecided'],
+      Object.keys(byClass).sort(function (x, y) {
+        return (byClass[y].total || 0) - (byClass[x].total || 0);
+      }).map(function (cls) {
+        var r = byClass[cls];
+        return [cls, num(r.total || 0),
+                { v: num(r.EXCEEDS || 0), cls: r.EXCEEDS ? 'flagged' : 'dim' },
+                { v: num(r.CLEAR || 0), cls: 'dim' },
+                { v: num(r.ABSTAIN || 0), cls: r.ABSTAIN ? 'undecided' : 'dim' }];
+      }));
+
+    // --- timeline through the clip --------------------------------------
+    var rows = s.timeline || [];
+    text(els.bucketNote, rows.length
+      ? 'One column = ' + (s.timeline_bucket_s || 5) + ' s of video.' : '');
+    if (!rows.length) {
+      els.timeline.innerHTML = '<span class="muted small">No crossings recorded.</span>';
+      text(els.tEnd, '');
+    } else {
+      var max = Math.max.apply(null, rows.map(function (r) { return r.total || 0; })) || 1;
+      els.timeline.innerHTML = rows.map(function (r) {
+        var h = function (n) { return Math.round(((n || 0) / max) * 100); };
+        return '<div class="tcol" title="' + (r.start_s || 0) + ' s: ' + (r.total || 0) +
+          ' crossing(s)">' +
+          '<div class="tseg e" style="height:' + h(r.EXCEEDS) + '%"></div>' +
+          '<div class="tseg c" style="height:' + h(r.CLEAR) + '%"></div>' +
+          '<div class="tseg a" style="height:' + h(r.ABSTAIN) + '%"></div>' +
+          '</div>';
+      }).join('');
+      var last = rows[rows.length - 1];
+      text(els.tEnd, Math.round((last.start_s || 0) + (s.timeline_bucket_s || 5)) + ' s');
+    }
 
     text(els.evidencePolicy, priv.evidence_policy || '');
     text(els.evidenceHeuristic, priv.heuristic || '');

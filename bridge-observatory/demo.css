@@ -121,6 +121,24 @@ p { margin: 0 0 14px; }
 }
 .prior strong { color: var(--text); }
 
+/* ---------- watch the demo ---------- */
+.watch-row { margin: 18px 0 4px; }
+.watch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #0d1020;
+  text-decoration: none;
+  border-radius: 9px;
+  padding: 11px 22px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.96rem;
+}
+.watch:hover { background: var(--accent-deep); }
+.watch-play { font-size: 0.8em; }
+
 /* ---------- callouts ---------- */
 .callout {
   border-radius: 10px;
@@ -424,17 +442,36 @@ dl.kv dd { margin: 0; font-family: var(--font-mono); text-align: right; }
 .disc ul { margin: 12px 0 0; padding-left: 18px; font-size: 0.86rem; color: var(--text-dim); }
 .disc li { margin-bottom: 8px; }
 
-/* ---------- reading the overlay ---------- */
-.reading summary {
-  cursor: pointer;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.98rem;
-  color: var(--text);
+/* ---------- overlay legend (mirrors the app's own gradient) ---------- */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  text-align: center;
 }
-.reading h4 { margin-top: 14px; }
-.reading p { font-size: 0.9rem; color: var(--text-dim); }
-.reading code {
+.legend-bar {
+  flex: 1;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(to right,
+    rgba(80, 220, 80, 0.45), rgba(175, 220, 0, 0.6),
+    rgba(255, 110, 0, 0.8), rgba(139, 0, 0, 0.95));
+}
+
+/* ---------- reading the overlay ---------- */
+.keygrid { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; }
+.keyitem {
+  flex: 1 1 280px;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+.keyitem b { color: var(--text); display: block; margin-bottom: 4px; }
+code {
   font-family: var(--font-mono);
   font-size: 0.86em;
   background: var(--surface-2);
@@ -452,23 +489,68 @@ dl.kv dd { margin: 0; font-family: var(--font-mono); text-align: right; }
 }
 .callout-inline strong { color: var(--amber); }
 
-/* ---------- glossary ---------- */
-dl.gloss { margin: 0; }
-dl.gloss dt {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.96rem;
-  color: var(--text);
-  margin-top: 16px;
+/* ---------- tables ---------- */
+.tablewrap { overflow-x: auto; }
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  margin-top: 4px;
 }
-dl.gloss dt:first-child { margin-top: 0; }
-dl.gloss dd {
-  margin: 5px 0 0;
-  padding-left: 16px;
-  border-left: 2px solid var(--surface-border);
+table.data th, table.data td {
+  text-align: right;
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+table.data th:first-child, table.data td:first-child { text-align: left; }
+table.data th {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-dim);
-  font-size: 0.91rem;
 }
+table.data td { font-family: var(--font-mono); color: var(--text); }
+table.data tr:last-child td { border-bottom: 0; }
+table.data td.flagged { color: var(--red); }
+table.data td.undecided { color: var(--amber); }
+table.data td.dim { color: var(--text-faint); }
+
+/* ---------- timeline ---------- */
+.timeline {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 110px;
+  margin-top: 10px;
+}
+.tcol { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; min-width: 6px; }
+.tseg { width: 100%; }
+.tseg.e { background: var(--red); }
+.tseg.c { background: #2e8b57; }
+.tseg.a { background: var(--amber); }
+.taxis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  margin-top: 5px;
+}
+.swatches { font-size: 0.8rem; color: var(--text-dim); margin: 10px 0 0; }
+.sw {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  margin: 0 4px 0 12px;
+  vertical-align: baseline;
+}
+.swatches .sw:first-child { margin-left: 0; }
+.sw-e { background: var(--red); }
+.sw-c { background: #2e8b57; }
+.sw-a { background: var(--amber); }
 
 .disc-list { margin: 0; padding-left: 18px; color: var(--text-dim); font-size: 0.92rem; }
 .disc-list li { margin-bottom: 10px; }
